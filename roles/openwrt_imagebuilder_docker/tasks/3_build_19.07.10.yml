@@ -69,8 +69,8 @@
 - name: Adjust permissions
   ansible.builtin.shell: 
     cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
-      "chown -R build:build /local_packages/ /images/"
-  when: libremesh_local_packages is defined
+      "chown -R build:build /images/ /files/ 
+      {% if (libremesh_local_packages is defined) %} /local_packages/ {% endif %}"
 
 - name: Append VERSION_DIST and VERSION_NUMBER to .config
   ansible.builtin.shell: 
