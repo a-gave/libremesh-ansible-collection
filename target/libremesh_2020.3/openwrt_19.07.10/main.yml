@@ -1,0 +1,10 @@
+# This file contain generic configuration to build Libremesh on top of openwrt 19.07.10
+
+# Define a libremesh specific commit/branch/tag
+# Default value is libremesh_version_tag: {{ libremesh_version }}
+# libremesh_version_tag:
+
+libremesh_version_packages:
+  - -dnsmasq
+  - -ppp
+  - -odhcpd-ipv6only

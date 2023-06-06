@@ -1,0 +1,7 @@
+---
+- name: 6.1 - Filter lime mac
+  include_tasks: 6.2_build_libremesh_lime-mac.yml
+  loop: "{{ openwrt_device_item.lime_mac }}"
+  loop_control:
+    loop_var: mesh_device_item
+  when: mesh_device_item is defined

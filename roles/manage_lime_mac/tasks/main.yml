@@ -1,0 +1,43 @@
+---
+- name: 0.1 - Assert mandatory variables are defined
+  ansible.builtin.assert:
+    that: 
+      - libremesh_version is defined
+      - openwrt_version is defined
+      - libremesh_community is defined
+      - libremesh_community_vars_file is defined
+    msg: "Mandatory variables are undefined"
+
+- name: 0.2 - Ensure host_vars dir exist
+  file:
+    path: "host_vars"
+    state: directory
+
+- name: 0.3 - Ensure lime-mac dir exist
+  file:
+    path: "lime-mac"
+    state: directory
+
+- name: 0.4 - Include Community main variables
+  ansible.builtin.include_vars:
+    file: "{{libremesh_community_main_vars}}"
+  vars:
+    libremesh_community_main_vars: "community/libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}/{{libremesh_community}}/main.yml" 
+
+- name: 0.5 - Include Community devices variables
+  ansible.builtin.include_vars:
+    file: "{{libremesh_community_devices_vars}}"
+  vars:
+    libremesh_community_devices_vars: "community/libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}/{{libremesh_community}}/{{libremesh_community_vars_file}}.yml" 
+
+- name: 0.6 - Filter target_subtarget
+  ansible.builtin.include_tasks: 0_filter_device.yml
+  vars:
+    devices: "{{ libremesh_target_subtarget.openwrt_devices }}"
+  loop: "{{ libremesh_devices }}"
+  loop_control:
+    loop_var: libremesh_target_subtarget
+
+- name: Flush handlers
+  meta: flush_handlers
+

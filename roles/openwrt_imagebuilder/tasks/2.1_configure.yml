@@ -1,0 +1,63 @@
+---
+# Configure
+
+- name: Add Libremesh feeds (precompiled-packages)
+  ansible.builtin.blockinfile:
+    path: "{{ openwrt_imagebuilder_path }}/repositories.conf"
+    block: |
+      src/gz libremesh https://feed.libremesh.org/{{ libremesh_version }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK libremesh"
+
+# openwrt 19.07.10
+- name: Ensure key dir exist
+  ansible.builtin.file:
+    path: "{{ openwrt_imagebuilder_path }}/keys"
+    state: directory
+
+- name: Add Libremesh public keys
+  ansible.builtin.shell:
+    cmd: "echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b
+      && echo 'RWSnGzyChavSiyQ+vLk3x7F0NqcLa4kKyXCdriThMhO78ldHgxGljM/8' >> keys/a71b3c8285abd28b"
+  args:
+    chdir: "{{ openwrt_imagebuilder_path }}"
+
+- name: Add Libremesh feeds of network-profiles
+  ansible.builtin.blockinfile:
+    path: "{{ openwrt_imagebuilder_path }}/repositories.conf"
+    block: |
+      src/gz profiles https://feed.libremesh.org/profiles
+  when: libremesh_local_packages is not defined
+
+- name: Add Libremesh feeds of local_packages in repositories.conf
+  ansible.builtin.blockinfile:
+    path: "{{ openwrt_imagebuilder_path }}/repositories.conf"
+    block: |
+      src/gz local_packages file:{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles
+  when: libremesh_local_packages is defined
+
+- name: Register local_packages public key id
+  ansible.builtin.shell:
+    cmd: "cat {{ openwrt_sdk_path }}/key-build.pub.id"
+  register: local_packages_pub_key_id
+
+- name: Register local_packages public key
+  ansible.builtin.set_fact:
+    local_packages_pub_key: "{{ local_packages_pub_key_id.stdout }}"
+
+- name: Ensure local_packages public key file exist
+  ansible.builtin.file:
+    path: "{{ openwrt_imagebuilder_path }}/keys/{{ local_packages_pub_key }}"
+    state: touch
+
+- name: Add local_packages public key
+  ansible.builtin.copy:
+    src: "{{ openwrt_sdk_path }}/key-build.pub"
+    dest: "{{ openwrt_imagebuilder_path }}/keys/{{ local_packages_pub_key }}"
+    remote_src: true
+
+- name: Append VERSION_DIST and VERSION_NUMBER to .config
+  ansible.builtin.blockinfile:
+    path: "{{ openwrt_imagebuilder_path }}/.config"
+    block: |
+      CONFIG_VERSION_DIST={{ version_dist }}
+      CONFIG_VERSION_NUMBER={{ libremesh_version }}

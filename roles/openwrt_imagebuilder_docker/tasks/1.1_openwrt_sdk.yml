@@ -1,0 +1,32 @@
+---
+- name: Discover the name of openwrt sdk dir
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-x86-64_*.Linux-x86_64"
+  register: openwrt_sdk_path
+
+- name: Check if local packages are already compiled
+  ansible.builtin.stat:
+    path: "{{ openwrt_sdk_path.files.0.path }}/bin/packages/x86_64/profiles/Packages.gz"
+  register: local_packages_are_compiled
+  when: openwrt_sdk_path.matched != 0
+    
+- name: Compile local packages with OpenWrt SDK (increase time of build)
+  ansible.builtin.include_role: 
+    name: openwrt_sdk
+  when: (local_packages_are_compiled is defined and force_openwrt_sdk_rebuild_local_packages )
+    or (openwrt_sdk_path.matched == 0)
+
+- name: Discover OpenWrt sdk name
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-x86-64_*.Linux-x86_64"
+  register: openwrt_sdk_pathname
+
+- name: Register fact openwrt_sdk_path
+  ansible.builtin.set_fact:
+    openwrt_sdk_path: "{{ openwrt_sdk_pathname.files.0.path }}"

@@ -1,0 +1,33 @@
+
+# LibreMesh VERSION PACKAGES
+{% for libremesh_package in libremesh_version_packages %}
+{% if libremesh_package.startswith('-') %}
+# CONFIG_PACKAGE_{{ libremesh_package[1:] }} is not set
+{% else %}
+CONFIG_PACKAGE_{{ libremesh_package }}=y
+{% endif %}
+{% endfor %}
+
+# LibreMesh COMMUNITY PACKAGES
+{% for libremesh_package in libremesh_devices_packages %}
+{% if libremesh_package.startswith('-') %}
+# CONFIG_PACKAGE_{{ libremesh_package[1:] }} is not set
+{% else %}
+CONFIG_PACKAGE_{{ libremesh_package }}=y
+{% endif %}
+{% endfor %}
+
+{% if build_target.packages is defined %}
+{% for libremesh_package in build_target.packages %}
+{% if libremesh_package.startswith('-') %}
+# CONFIG_PACKAGE_{{ libremesh_package[1:] }} is not set
+{% else %}
+CONFIG_PACKAGE_{{ libremesh_package }}=y
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{{ target_configs }}
+
+
+

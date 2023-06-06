@@ -1,0 +1,32 @@
+---
+- name: Register fact this_role_path
+  ansible.builtin.set_fact:
+    this_role_path: "{{ role_path }}"
+    this_role_name: "{{ role_name }}"
+
+- name: Install requirements
+  ansible.builtin.include_tasks: 0_requirements.yml
+  when: not skip_install_openwrt_imagebuilder_requirements
+
+- name: Include variables and print debug
+  ansible.builtin.include_role:
+    name: build
+
+- name: Register fact build_targets
+  ansible.builtin.set_fact:
+    build_targets: "{{ openwrt_targets | default(libremesh_devices) }}"
+
+- name: Compile local packages with OpenWrt SDK (increase time of build)
+  ansible.builtin.include_tasks: 0.1_openwrt_sdk.yml
+  when: libremesh_local_packages
+
+- name: Prebuild
+  ansible.builtin.include_tasks: 1_prebuild.yml
+  vars:
+    openwrt_target: "{{ build_target.openwrt_target }}"
+    openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
+    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
+  loop: "{{ build_targets }}"
+  loop_control:
+    loop_var: build_target
+

@@ -1,0 +1,82 @@
+---
+- name: 1.1 - Print debug
+  ansible.builtin.include_role:
+    name: build
+    tasks_from: 1_print_debug.yml
+
+- name: 1.1 - [Warn] Stop and remove all existing openwrt-sdk-docker containers and their's volumes
+  ansible.builtin.shell:
+    cmd: docker ps -a | grep "openwrt\/sdk" &> /dev/null &&
+      docker stop $(docker ps -a | grep "openwrt\/sdk" | awk '{print $1}') &&
+      docker rm -vf $(docker ps -a | grep "openwrt\/sdk" | awk '{print $1}') 
+  ignore_errors: true
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+    
+- name: 1.2 - Start docker container {{ openwrt_sdk_docker_container }}
+  ansible.builtin.shell: 
+    cmd: docker run --name {{openwrt_sdk_docker_container}} -it -d 
+      -v "{{ openwrt_sdk_docker_workdir }}/bin/:/builder/bin/"
+      -v "{{ openwrt_sdk_docker_local_packages_sources_mountdir }}:{{ openwrt_sdk_docker_local_packages_sources_dir }}" {{ openwrt_sdk_docker_image }}
+
+- name: 1.3 - Generate signin key and output public key to file
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./staging_dir/host/bin/usign -G -s key-build -p key-build.pub -c \"Local build key\"  
+      && ./staging_dir/host/bin/usign -F -p key-build.pub > key-build.pub.id"
+
+- name: 1.4 - Copy public key id
+  ansible.builtin.shell: 
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:/builder/key-build.pub.id .
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: 1.5 - cp feeds.conf.defaults feed.conf
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "cp feeds.conf.default feeds.conf"
+
+- name: 1.6 - Add Libremesh feeds (sources)
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "echo '{{ libremesh_feeds }}' >> feeds.conf"
+
+- name: 1.7 - Update and install feeds
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./scripts/feeds update -a; ./scripts/feeds install -a"
+
+- name: 1.8 - Adjust permission
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_sdk_docker_container }} sh -c 
+      "cp -r /local_packages/* {{ openwrt_sdk_docker_local_packages_overwrite_dir }}
+      && chown -R buildbot:buildbot /builder/bin/"
+
+- name: 1.9 - Update and install feeds - install local_packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./scripts/feeds update -a; ./scripts/feeds install -a"
+
+- name: 1.10 - Expand to full config
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make defconfig"
+
+- name: 1.11 - Compile local packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make package/feeds/profiles/{{ libremesh_local_package }}/compile {{ make_nproc }}"
+  loop: "{{ libremesh_local_packages }}"
+  loop_control:
+    loop_var: libremesh_local_package
+
+- name: 1.12 - Generate index of local packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make package/index"
+
+- name: 1.13 - Stop and Remove docker container {{ openwrt_sdk_docker_container }} and it's volumes
+  ansible.builtin.shell:
+    cmd: docker stop {{ openwrt_sdk_docker_container }}; 
+      docker rm -vf {{ openwrt_sdk_docker_container }}
+  ignore_errors: true

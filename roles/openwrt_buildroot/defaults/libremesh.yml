@@ -1,0 +1,8 @@
+# Libremesh Releases
+libremesh_release:
+  stable: 2023.1 # Unreleased, compatible with openwrt 22
+  old_stable: 2020.3 # Released 2023, compatible with openwrt 19 and lower
+
+libremesh_release_archive:
+  'librerouteros_v1.5': librerouteros # ^0bddc6b50da6f13b1fd20a28f5c4d557c3819737 Released: Thu Mar 17 2022
+  '2020': 2020.1 # Released: Fri Dec 11 2020

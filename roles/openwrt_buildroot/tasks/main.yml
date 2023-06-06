@@ -1,0 +1,23 @@
+---
+- name: Register fact this_role_path
+  ansible.builtin.set_fact:
+    this_role_path: "{{ role_path }}"
+    this_role_name: "{{ role_name }}"
+
+- name: build - Include variables and print debug
+  ansible.builtin.include_role:
+    name: build
+
+- name: build - Build 
+  ansible.builtin.include_tasks: 1_prebuild.yml
+  vars:
+    openwrt_target: "{{ build_target.openwrt_target }}"
+    openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
+    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
+  loop: "{{ libremesh_devices }}"
+  loop_control:
+    loop_var: build_target
+
+
+
+

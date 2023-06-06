@@ -1,0 +1,10 @@
+
+{% for deselect_device in openwrt_devices %}
+# CONFIG_TARGET_DEVICE_{{ openwrt_target }}_{{ openwrt_subtarget }}_DEVICE_{{ deselect_device.name }} is not set
+{% endfor %}
+
+CONFIG_TARGET_DEVICE_{{ openwrt_target }}_{{ openwrt_subtarget }}_DEVICE_{{ device.name }}=y
+
+{% if device.packages is defined %}
+# CONFIG_TARGET_DEVICE_PACKAGES_{{ openwrt_target }}_{{ openwrt_subtarget }}_DEVICE_{{ device.name }}="{{device.packages}}"
+{% endif %}

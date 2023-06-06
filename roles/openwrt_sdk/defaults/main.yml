@@ -1,0 +1,23 @@
+# defaults file for libremesh.libremesh.openwrt_sdk
+
+# Compile options
+## Build local_packages only for x86_64, default true
+openwrt_sdk_build_only_x86_64: true
+make_nproc: "-j$(nproc)"
+
+# OpenWrt sdk paths
+openwrt_build_mode: "stable"
+openwrt_build_user: "{{ ansible_user }}"
+openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
+openwrt_build_dirname: "libremesh_{{ libremesh_version }}"
+openwrt_build_dir: "{{ openwrt_dir }}/{{ openwrt_build_dirname }}"
+
+openwrt_sdk_download_dir: "{{ openwrt_dir }}/openwrt_sdk"
+
+libremesh_version_tag: v{{libremesh_version}}
+libremesh_feeds: |
+  src-git libremesh https://github.com/libremesh/lime-packages.git;{{ libremesh_version_tag }}
+  src-git profiles https://github.com/libremesh/network-profiles.git
+
+# Skip options
+skip_install_openwrt_sdk_requirements: false

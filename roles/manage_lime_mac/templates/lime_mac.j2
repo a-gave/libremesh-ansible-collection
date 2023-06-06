@@ -1,0 +1,22 @@
+config lime system
+{% if hostvars[item_lime_mac.lime_mac].config_lime_system is defined %}
+	{{ hostvars[item_lime_mac.lime_mac].config_lime_system }}
+{% endif %}
+
+config lime network
+{% if hostvars[item_lime_mac.lime_mac].config_lime_network is defined %}
+	{{ hostvars[item_lime_mac.lime_mac].config_lime_network }}
+{% endif %}
+
+config lime wifi
+{% if hostvars[item_lime_mac.lime_mac].config_lime_wifi is defined %}
+	{{ hostvars[item_lime_mac.lime_mac].config_lime_wifi }}
+{% endif %}
+
+{% if hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey %}
+config generic_uci_config wireguard
+	list uci_set "wireguard.wg0=interface"
+	list uci_set "wireguard.wg0.address={{ hostvars[item_lime_mac.lime_mac].vpn_wg0_address }}"
+  list uci_set "wireguard.wg0.private_key={{ hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey }}"
+	list uci_set "wireguard.wg0.listen_port={{ hostvars[item_lime_mac.lime_mac].vpn_wg0_listenport }}"
+{% endif %}

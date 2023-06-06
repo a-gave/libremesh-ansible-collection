@@ -1,0 +1,9 @@
+---
+- name: 1.1 - Print debug
+  ansible.builtin.include_role:
+    name: build
+    tasks_from: 1_print_debug.yml
+
+- name: 1.2 - Build
+  ansible.builtin.include_tasks: 2_build.yml
+

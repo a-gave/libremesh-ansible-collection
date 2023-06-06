@@ -1,0 +1,96 @@
+---
+
+- name: 1.5.2 - Debug Build
+  ansible.builtin.debug:
+    msg:
+      - "# BUILD {{ version_dist }}:"
+      - "libremesh_version = {{ libremesh_version | default('') }}"
+      - "libremesh_community = {{ libremesh_community | default('') }}"
+      - "libremesh_community_variables_file = {{ libremesh_community_variables_file | default('') }}"
+      - "openwrt_version = {{ openwrt_version | default('') }}"
+      - "openwrt_target = {{ openwrt_target | default('') }}"
+      - "openwrt_subtarget = {{ openwrt_subtarget | default('') }}"
+      - "openwrt_devices = {{ openwrt_devices_list_string | default('') }}"
+      - "--------------"
+      - "# VERSION PACKAGES"
+      - "# Selected depending on LibreMesh and OpenWrt versions."
+      - "# Assumed you are using libremesh defaults lime-community and suggested-packages"
+      - "# Or a compatibles version that use batman-adv and babel"
+      - "libremesh_version_packages = {{ libremesh_version_packages_list | default('') }}"
+      - "libremesh_target_subtarget_packages = {{ libremesh_target_subtarget_packages_list | default('') }}"
+      - "--------------"
+      - "# COMMUNITY PACKAGES"
+      - "# selected depending on Community variables file specified"
+      - "# optionally select new ones or overwrite VERSION PACKAGES"
+      - "libremesh_devices_packages = {{ libremesh_devices_packages_list | default('') }}"
+      - "libremesh_community_file_target_subtarget_packages = {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
+#     - "libremesh_community_file_device_packages = {{ libremesh_community_file_device_packages | default('') }}"
+      - "--------------"
+      - "# LOCAL PACKAGES"
+      - "# Compiled with openwrt-sdk, or directly with buildroot"
+      - "local_packages = {{ libremesh_local_packages | default('') | join(' ') }}"
+      - "--------------"
+      - "# BUILDER:"
+      - "builder machine = {{ inventory_hostname }}"
+      - "openwrt_dir = {{ openwrt_dir | default('') }}"
+      - "openwrt_build_user = {{ openwrt_build_user | default('') }}"
+      - "--------------"
+      - "# OPENWRT IMAGEBUILDER DOCKER:"
+      - "openwrt_imagebuilder_docker_workdir = {{ openwrt_imagebuilder_docker_workdir | default('') }}" 
+      - "openwrt_imagebuilder_docker_bin_dirname = {{ openwrt_imagebuilder_docker_bin_dirname | default('') }}" 
+      - "openwrt_imagebuilder_docker_files_dir = {{ openwrt_imagebuilder_docker_files_dir | default('') }}" 
+      - "--------------"
+      - "# OPENWRT SDK DOCKER:"
+      - "openwrt_sdk_docker_workdir = {{ openwrt_sdk_docker_workdir | default('') }}" 
+      - "openwrt_sdk_docker_bin_dirname = {{ openwrt_sdk_docker_bin_dirname | default('') }}" 
+      - "openwrt_sdk_docker_image = {{ openwrt_sdk_docker_image | default('') }}"
+      - "openwrt_sdk_docker_container = {{ openwrt_sdk_docker_container | default('') }}"
+      - "--------------"
+      - "# OPENWRT IMAGEBUILDER:"
+      - "openwrt_imagebuilder_download_dir = {{ openwrt_imagebuilder_download_dir | default('') }}" 
+      - "openwrt_imagebuilder_docker_bin_dirname = {{ openwrt_imagebuilder_docker_bin_dirname | default('') }}" 
+      - "--------------"
+      - "# OPENWRT SDK:"
+      - "openwrt_sdk_download_dir = {{ openwrt_sdk_download_dir | default('') }}" 
+      - "openwrt_sdk_path = {{ openwrt_sdk_path | default('') }}" 
+      - "--------------"
+      - "# OPENWRT BUILDROOT:"
+      - "openwrt_buildroot_dir = {{ openwrt_build_dir | default('') }}"
+      - "openwrt_bin_dir = {{ openwrt_bin_dir | default('') }}" 
+      - "openwrt_build_dir = {{ openwrt_build_dir | default('') }}"
+    
+  register: build_debug
+
+- name: 1.5.3 - Debug to file
+  ansible.builtin.shell:
+    cmd: echo '{{ build_debug.msg }}' >> {{ debug_logfile }} && sed -i -e 's/, /\n/g' {{ debug_logfile }}
+  delegate_to: localhost
+
+- name: 1.5.2 - Debug Build
+  ansible.builtin.debug:
+    msg:
+      - "# OPENWRT SDK:"
+      - "openwrt_sdk_download_dir = {{ openwrt_sdk_download_dir | default('') }}" 
+      - "openwrt_sdk_path = {{ openwrt_sdk_path | default('') }}" 
+  when: this_role_name == "openwrt_sdk"
+  register: openwrt_sdk_debug
+
+- name: 1.5.2 - Debug OpenWrt sdk docker
+  ansible.builtin.debug:
+    msg:
+      - "# OPENWRT SDK DOCKER:"
+      - "openwrt_sdk_docker_workdir = {{ openwrt_sdk_docker_workdir | default('') }}" 
+      - "openwrt_sdk_docker_bin_dirname = {{ openwrt_sdk_docker_bin_dirname | default('') }}" 
+      - "openwrt_sdk_docker_image = {{ openwrt_sdk_docker_image | default('') }}"
+      - "openwrt_sdk_docker_container = {{ openwrt_sdk_docker_container | default('') }}"
+  when: this_role_name == "openwrt_sdk_docker"
+  register: openwrt_sdk_docker_debug
+
+- name: 1.5.3 - Debug to file
+  ansible.builtin.shell:
+    cmd: echo '{{ openwrt_sdk_docker_debug.msg }}' >> {{ debug_logfile }} && sed -i -e 's/, /\n/g' {{ debug_logfile }}
+  delegate_to: localhost
+  when: this_role_name == "openwrt_sdk_docker"
+
+
+

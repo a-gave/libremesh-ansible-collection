@@ -1,0 +1,12 @@
+---
+- name: 2.0 - Download
+  ansible.builtin.include_tasks: 2.0_download.yml
+
+- name: 2.1 - Configure
+  ansible.builtin.include_tasks: 2.1_configure.yml
+
+- name: 2.2 - Build
+  ansible.builtin.include_tasks: 2.2_build_libremesh_devices.yml
+  loop: "{{ openwrt_devices | default([]) }}"
+  loop_control:
+    loop_var: openwrt_device

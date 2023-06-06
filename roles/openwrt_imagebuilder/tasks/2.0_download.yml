@@ -1,0 +1,54 @@
+---
+- name: Ensure OpenWrt Imagebuilder download dir exists
+  file:
+    path: "{{ openwrt_imagebuilder_download_dir }}"
+    state: directory
+
+- name: Check if openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }} exists
+  ansible.builtin.find:
+    path: "{{ openwrt_imagebuilder_download_dir }}"
+    patterns: 
+     - "openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}.Linux-x86_64.tar.xz"
+  register: openwrt_imagebuilder_path_downloaded
+
+# https://downloads.openwrt.org/releases/22.03.5/targets/ath79/generic/openwrt-imagebuilder-22.03.5-ath79-generic.Linux-x86_64.tar.xz
+- name: Download openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}
+  ansible.builtin.shell:
+    cmd: "wget -nd --no-parent -r https://downloads.openwrt.org/releases/{{ openwrt_version }}/targets/{{ openwrt_target }}/{{ openwrt_subtarget }}/ -A 'openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}.Linux-x86_64.tar.xz'"
+  args:
+    chdir: "{{ openwrt_imagebuilder_download_dir }}"
+  when: not openwrt_imagebuilder_path_downloaded.files
+  
+- name: Register openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }} path compressed
+  ansible.builtin.find:
+    path: "{{ openwrt_imagebuilder_download_dir }}"
+    patterns: 
+     - "openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}.Linux-x86_64.tar.xz"
+  register: openwrt_imagebuilder_path_compressed
+
+- name: Check if a copy already extracted exist
+  ansible.builtin.find:
+    path: "{{ openwrt_imagebuilder_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}.Linux-x86_64"
+  register: openwrt_imagebuilder_path
+
+- name: Extract Imagebuilder
+  ansible.builtin.shell:
+    cmd: "tar -xvf {{ openwrt_imagebuilder_path_compressed.files.0.path }}"
+  args:
+    chdir: "{{ openwrt_imagebuilder_download_dir }}"
+  when: not openwrt_imagebuilder_path.files
+
+- name: Register openwrt-imagebuilder name
+  ansible.builtin.find:
+    path: "{{ openwrt_imagebuilder_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-imagebuilder-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}.Linux-x86_64"
+  register: openwrt_imagebuilder_pathname
+
+- name: Register fact openwrt_imagebuilder_path
+  ansible.builtin.set_fact:
+    openwrt_imagebuilder_path: "{{ openwrt_imagebuilder_pathname.files.0.path }}"

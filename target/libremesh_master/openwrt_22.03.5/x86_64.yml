@@ -1,0 +1,12 @@
+# Define here target specific configs
+libremesh_target_configs:
+
+# Define here target specific packages
+libremesh_target_subtarget_packages: []
+
+# Define here a list of supported devices
+libremesh_supported_devices:
+  - generic
+
+# Define here a list of supported devices configs
+libremesh_device_specific_configs:

@@ -1,0 +1,27 @@
+---
+- name: 3.1 - Add Libremesh feeds
+  blockinfile:
+    path: "{{ openwrt_build_dir }}/feeds.conf"
+    block: "{{ libremesh_feeds }}"
+  notify: "Update and install feeds"
+  when: not skip_libremesh_install
+  tags:
+    - libremesh_install
+
+- name: 3.2 - Add local_packages - Ensure libremesh_community_dir exists
+  file:
+    path: "{{ libremesh_community_dir }}"
+    state: directory
+  when: not skip_libremesh_add_local_packages and libremesh_local_packages is defined
+  tags:
+    - libremesh_add_local_packages 
+
+- name: 3.3 - Add local_packages in {{ libremesh_community_dir }}
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/files/packages/"
+    dest: "{{ libremesh_community_dir }}/"
+    delete: yes
+  notify: "Update and install feeds"
+  when: not skip_libremesh_add_local_packages and libremesh_local_packages is defined
+  tags:
+    - libremesh_add_local_packages

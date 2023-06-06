@@ -1,0 +1,6 @@
+---
+- name: 2.2.2 - Build LibreMesh {{ openwrt_device.name }} lime-mac
+  include_tasks: 2.2.3_build_libremesh_lime_mac.yml
+  loop: "{{ openwrt_device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac

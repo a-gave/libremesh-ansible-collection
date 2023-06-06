@@ -1,0 +1,10 @@
+---
+- name: Include all variables files
+  include_tasks: 0_include_all_variables_files.yml
+
+- name: Ensure debug_logpath exists
+  become: false
+  ansible.builtin.file:
+    path: "{{ debug_logpath }}"
+    state: directory
+  delegate_to: localhost

@@ -1,0 +1,7 @@
+- name: 0.1 - Install OpenWrt sdk docker requirements
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - docker.io

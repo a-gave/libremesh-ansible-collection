@@ -1,0 +1,29 @@
+---
+- name: 2.3.1 - Ensure lime-mac path exist
+  ansible.builtin.file:
+    path: "{{ openwrt_imagebuilder_path }}/files/etc/config/"
+    state: directory
+
+- name: 2.3.2 - Add lime-mac to /files
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/lime-mac/{{item_lime_mac.lime_mac}}"
+    dest: "{{ openwrt_imagebuilder_path }}/files/etc/config/"
+
+- name: 2.3.4 - Build lime_mac {{ item_lime_mac.lime_mac }}
+  ansible.builtin.shell: 
+    cmd: "make image PROFILE='{{openwrt_device.name}}'
+      PACKAGES='{{ libremesh_version_packages_list | default('') }} 
+        {{ libremesh_target_subtarget_packages_list | default('') }} 
+        {{ libremesh_devices_packages_list | default('') }}' 
+        {{ item_lime_mac.packages | default('') }}
+      BIN_DIR='{{ openwrt_imagebuilder_lime_mac_bin_dir }}' 
+      FILES='files/'
+      EXTRA_IMAGE_NAME='{{item_lime_mac.lime_mac}}'"
+  args:
+    chdir: "{{ openwrt_imagebuilder_path }}"
+
+- name: 2.3.5 - clean /files
+  ansible.builtin.shell: 
+    cmd: "rm -rf files/*"
+  args:
+    chdir: "{{ openwrt_imagebuilder_path }}"

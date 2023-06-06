@@ -1,0 +1,60 @@
+---
+# Generate local keys to sing packages
+# Add libremesh feed 
+# Write local_packages on community dir
+# https://openwrt.org/docs/guide-user/security/keygen
+
+- name: 3.1 - Adjust permissions
+  become: yes
+  ansible.builtin.file:
+    path: "{{ openwrt_sdk_path }}/bin"
+    state: directory
+    recurse: yes
+    owner: "{{ openwrt_build_user }}"
+    group: "{{ openwrt_build_user }}"
+  
+- name: 3.2 - Generate signin key
+  ansible.builtin.shell: ./staging_dir/host/bin/usign -G -s ./key-build -p ./key-build.pub -c "Local build key"
+  args:
+    chdir: "{{ openwrt_sdk_path }}"
+
+- name: 3.3 - Generate pubkey id
+  ansible.builtin.shell: ./staging_dir/host/bin/usign -F -p key-build.pub > key-build.pub.id
+  args:
+    chdir: "{{ openwrt_sdk_path }}"
+
+- name: 3.4 - cp feeds.conf.default feeds.conf
+  ansible.builtin.copy:
+    src: "{{ openwrt_sdk_path }}/feeds.conf.default"
+    dest: "{{ openwrt_sdk_path }}/feeds.conf"
+    force: no
+    remote_src: true
+
+- name: 3.5 - Add Libremesh feeds (sources)
+  ansible.builtin.blockinfile:
+    path: "{{ openwrt_sdk_path }}/feeds.conf"
+    block: "{{ libremesh_feeds }}"
+
+- name: 3.6 - Update and Install feeds
+  ansible.builtin.shell: "./scripts/feeds update -a; ./scripts/feeds install -a"
+  args:
+    chdir: "{{ openwrt_sdk_path }}"
+
+- name: 3.7 - Copy local_packages to libremesh_community feeds dir
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/files/packages/"
+    dest: "{{ openwrt_sdk_path }}/feeds/profiles/{{ libremesh_community }}/"
+    delete: yes
+
+- name: 3.8 - Update and Install feeds - Install local_packages
+  ansible.builtin.shell: "./scripts/feeds update -a; ./scripts/feeds install -a"
+  args:
+    chdir: "{{ openwrt_sdk_path }}"
+
+- name: 3.9 - Expand to full config
+  ansible.builtin.shell:
+    cmd: "make defconfig"
+  args:
+    chdir: "{{ openwrt_sdk_path }}"
+
+

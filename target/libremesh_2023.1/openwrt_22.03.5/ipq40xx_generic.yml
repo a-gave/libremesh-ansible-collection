@@ -1,0 +1,17 @@
+# Define here target specific configs
+libremesh_target_configs:
+
+# Define here target specific packages
+libremesh_target_subtarget_packages: 
+  - -wpad-basic-wolfssl
+  - -wpad-mesh-openssl
+  - kmod-ath10k
+  - -kmod-ath10k-ct
+
+# Define here a list of supported devices
+libremesh_supported_devices:
+  - plasmacloud_pa1200
+
+# Define here a list of supported devices configs
+libremesh_device_specific_configs:
+

@@ -1,0 +1,18 @@
+---
+skip_preflight: true
+skip_openwrt_install: false
+skip_libremesh_install: false
+skip_libremesh_add_local_packages: false
+skip_configure_profiles: false
+skip_configure_clean: false
+skip_configure_custom: false
+skip_configure_init: false
+skip_webserver_update: true
+skip_build_openwrt: false
+skip_build_openwrt_devices: false
+skip_build_lime_mac: false
+skip_post_build: true
+
+
+
+

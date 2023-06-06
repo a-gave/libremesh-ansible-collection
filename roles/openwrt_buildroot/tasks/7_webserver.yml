@@ -1,0 +1,30 @@
+---
+- name: webserver - create server_root dirs
+  shell:
+    cmd: mkdir -p {{item.server_root}}
+  loop: "{{ static_services }}"
+
+- name: webserver - setup nginx
+  include_role:
+    name: ../roles/nginx
+    tasks_from: main
+
+- name: webserver - Rsync build directories
+  become: yes
+  shell:
+    cmd: rsync -d {{ openwrt_dir }}/* {{ webui_path }} --delete
+
+- name: webserver - Create symbolic links for all targets
+  become: yes
+  shell:
+    cmd: for path in $(ls {{ openwrt_dir }}); do ln -s -f {{ openwrt_dir }}/${path}/bin/targets/* {{ webui_path }}/${path}/; done;
+
+- name: webserver - adjust permissions
+  become: yes
+  shell:
+    cmd: chown -R www-data:www-data {{ webui_path }}
+
+- name: webserver - restart nginx
+  become: yes
+  shell:
+    cmd: systemctl restart nginx

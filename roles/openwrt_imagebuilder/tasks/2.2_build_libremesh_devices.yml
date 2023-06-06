@@ -1,0 +1,15 @@
+---
+- name: 2.2.1 - Build LibreMesh
+  ansible.builtin.shell: 
+    cmd: "make image PROFILE='{{openwrt_device.name}}'
+      PACKAGES='{{ libremesh_version_packages_list | default('') }} 
+        {{ libremesh_target_subtarget_packages_list | default('') }} 
+        {{ libremesh_devices_packages_list | default('') }}' 
+      BIN_DIR='{{ openwrt_imagebuilder_bin_dir }}' 
+      FILES='files/'"
+  args:
+    chdir: "{{ openwrt_imagebuilder_path }}"
+    
+- name: 2.2.2 - Build LibreMesh {{ openwrt_device.name }} lime-mac
+  include_tasks: 2.2.2_loop_lime_mac.yml
+  when: not skip_build_lime_mac and openwrt_device.lime_mac is defined

@@ -1,0 +1,45 @@
+---
+- name: Register fact this_role_path
+  ansible.builtin.set_fact:
+    this_role_path: "{{ role_path }}"
+    this_role_name: "{{ role_name }}"
+
+- name: Install requirements
+  ansible.builtin.include_tasks: 0_requirements.yml
+  when: not skip_openwrt_sdk_install_requirements
+
+- name: Include variables and print debug
+  ansible.builtin.include_role:
+    name: build
+
+- name: Register fact build_targets
+  ansible.builtin.set_fact:
+    build_targets: "{{ openwrt_targets | default(libremesh_devices) }}"
+
+- name: Ensure openwrt_sdk_docker_local_packages_sources_mountdir exist
+  ansible.builtin.file:
+    path: "{{ openwrt_sdk_docker_local_packages_sources_mountdir }}"
+    state: directory
+
+- name: Copy local_packages to openwrt_sdk_docker_local_packages_sources_mountdir
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/files/packages/"
+    dest: "{{ openwrt_sdk_docker_local_packages_sources_mountdir }}"
+    delete: yes
+
+- name: Compile 
+  ansible.builtin.include_tasks: 1_compile_docker.yml
+  vars:
+    openwrt_target: "{{ build_target.openwrt_target }}"
+    openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
+  loop: "{{ build_targets }}"
+  loop_control:
+    loop_var: build_target
+  when: not openwrt_sdk_build_only_x86_64
+
+- name: Compile 
+  ansible.builtin.include_tasks: 1_compile_docker.yml
+  vars:
+    openwrt_target: "x86"
+    openwrt_subtarget: "64"
+  when: openwrt_sdk_build_only_x86_64

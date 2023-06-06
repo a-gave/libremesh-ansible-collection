@@ -1,0 +1,14 @@
+---
+- name: 3.2.1 - Loops lime_mac
+  include_tasks: 3.3_build_libremesh_lime_mac.yml
+  loop: "{{ openwrt_device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac
+  when: openwrt_version != '19.07.10'
+
+- name: 3.2.1 - Loops lime_mac
+  include_tasks: 3.3_build_libremesh_lime_mac_19.07.10.yml
+  loop: "{{ openwrt_device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac
+  when: openwrt_version == '19.07.10'

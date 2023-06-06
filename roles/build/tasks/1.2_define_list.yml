@@ -1,0 +1,14 @@
+---
+- name: Define list of OpenWrt selected devices
+  ansible.builtin.set_fact:
+    openwrt_devices_list: "{{ openwrt_devices_list | default([]) | union([openwrt_device.name])}}"
+  loop: "{{ openwrt_devices }}"
+  loop_control:
+    loop_var: openwrt_device
+
+- name: Define list string of OpenWrt selected devices
+  ansible.builtin.set_fact:
+    openwrt_devices_list_string: "{{ openwrt_devices_list | join(' ') | default([]) }}"
+  loop: "{{ openwrt_devices }}"
+  loop_control:
+    loop_var: openwrt_device

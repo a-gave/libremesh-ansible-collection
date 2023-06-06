@@ -1,0 +1,7 @@
+node:
+{% for target in groups['libremesh_devices'] %}
+  - targets: ['{{ ip_network }}.{{ hostvars[target].ip_host }}:9090']
+    labels:
+      host: '{{ hostvars[target].hostname }}'
+      lime_mac: '{{ hostvars[target].lime_mac }}'
+{% endfor %}

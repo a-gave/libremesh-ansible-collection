@@ -1,0 +1,4 @@
+---
+- name: Install Blackbox Exporter
+  include_role:
+    name: prometheus.prometheus.blackbox_exporter

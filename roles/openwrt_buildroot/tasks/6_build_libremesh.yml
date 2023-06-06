@@ -1,0 +1,15 @@
+---
+- name: "6.0 - Build {{ version_dist }} - {{ openwrt_target }}_{{ openwrt_subtarget }}" 
+  shell: "make target/linux/clean ; make -j $(nproc) {{ openwrt_make_debug_level }} BIN_DIR={{ openwrt_bin_dir }}/targets"
+  args:
+    chdir: "{{ openwrt_build_dir }}"
+  when: not skip_build_openwrt_devices
+  tags:
+    - build_openwrt_devices
+
+- name: 6.1 - Filter lime-mac
+  include_tasks: 6.1_filter_lime-mac.yml
+  loop: "{{ openwrt_devices }}"
+  loop_control:
+    loop_var: openwrt_device_item
+  when: not skip_build_lime_mac

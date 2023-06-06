@@ -1,0 +1,5 @@
+---
+- name: 2.2 - Generate lime-mac files
+  template:
+    src: lime_mac.j2
+    dest: "{{ playbook_dir }}/lime-mac/{{ item_lime_mac.lime_mac}}"

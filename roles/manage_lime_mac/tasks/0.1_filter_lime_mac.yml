@@ -1,0 +1,24 @@
+---
+- name: 1 - Init vars
+  include_tasks: 1_init_vars.yml
+  loop: "{{ device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac
+  ignore_errors: true
+  when: not skip_init_vars_lime_mac
+
+- name: 2 - Generate lime-macaddress
+  include_tasks: 2_generate_lime_mac.yml
+  loop: "{{ device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac
+  ignore_errors: true
+  when: not skip_generate_lime_mac
+
+- name: 3 - Update vpn wg server
+  include_tasks: 3_update_vpn_wg_server.yml
+  loop: "{{ device.lime_mac }}"
+  loop_control:
+    loop_var: item_lime_mac
+  ignore_errors: true
+  when: not skip_update_vpn_wg_server

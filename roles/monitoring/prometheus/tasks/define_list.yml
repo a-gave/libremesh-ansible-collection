@@ -1,0 +1,31 @@
+---
+- name: Ensure monitoring dir exist
+  become: false
+  ansible.builtin.file:
+    path: "{{playbook_dir}}/vars/monitoring/"
+    state: directory
+  delegate_to: localhost
+
+- name: Create node file
+  become: false
+  blockinfile:
+    path: "{{playbook_dir}}/vars/monitoring/node.yml"
+    block: "{{ lookup('ansible.builtin.template', 'prometheus_node.j2') }}"
+    create: yes
+  delegate_to: localhost
+
+- name: Create node remote file
+  become: false
+  blockinfile:
+    path: "{{playbook_dir}}/vars/monitoring/node_remote.yml"
+    block: "{{ lookup('ansible.builtin.template', 'prometheus_node_remote.j2') }}"
+    create: yes
+  delegate_to: localhost
+
+- name: add vars files
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/vars/monitoring/node.yml"
+
+- name: add vars files
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/vars/monitoring/node_remote.yml"

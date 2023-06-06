@@ -1,0 +1,19 @@
+---
+- name: Install openwrt-imagebuilder requirements
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - build-essential 
+      - libncurses-dev 
+      - zlib1g-dev 
+      - gawk 
+      - git 
+      - gettext 
+      - libssl-dev 
+      - xsltproc 
+      - rsync 
+      - wget 
+      - unzip 
+      - python3

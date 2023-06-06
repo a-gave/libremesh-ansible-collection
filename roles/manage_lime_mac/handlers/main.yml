@@ -1,0 +1,8 @@
+---
+- name: Restart Wireguard Interface wg1
+  become: yes
+  service:
+    name: wg-quick@wg1
+    state: restarted
+    enabled: yes
+  delegate_to: "{{ hostvars[groups['wg_server'][0]].inventory_hostname }}"

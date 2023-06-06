@@ -1,0 +1,47 @@
+
+
+# HELPERS
+_libremesh_openwrt_versions_path: libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}
+_openwrt_target_subtarget_path: "{{openwrt_target}}_{{openwrt_subtarget}}"
+
+# VARIABLES PATHS
+# Default paths from which to include variables
+
+## Define packages related to LibreMesh and OpenWrt versions
+libremesh_version_vars: "{{role_path}}/../../target/{{ _libremesh_openwrt_versions_path }}/main.yml"
+
+## Define packages related to LibreMesh and OpenWrt versions, that address devices on specific target_subtarget
+libremesh_target_vars: "{{role_path}}/../../target/{{ _libremesh_openwrt_versions_path }}/{{ _openwrt_target_subtarget_path }}.yml"
+
+## Community variables defined on main file
+libremesh_community_vars: "community/{{ _libremesh_openwrt_versions_path }}/{{libremesh_community}}/main.yml" 
+
+## Community variables defined on selected file
+libremesh_community_file_vars: "community/{{ _libremesh_openwrt_versions_path }}/{{libremesh_community}}/{{ libremesh_community_variables_file }}.yml" 
+
+
+# DEBUG OPTIONS
+##
+## Path where to save log
+debug_logpath: "{{ playbook_dir }}/tmp/log"
+##
+debug_logfilename: "$(date +%Y%m%d%H%M)_{{ this_role_name | default('') }}_libremesh_{{ libremesh_version }}_{{ _openwrt_target_subtarget_path }}.log"
+##
+## Standard name for every log file
+debug_logfile: "{{ debug_logpath }}/{{ debug_logfilename }}"
+
+
+
+version_dist: "LibreMesh"
+version_number: ""
+
+# openwrt_build_dir: ''
+# openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/openwrt_imagebuilder_{{ openwrt_version }}"
+# openwrt_imagebuilder_docker_files_dir: "{{ openwrt_imagebuilder_docker_workdir }}/files"
+# openwrt_imagebuilder_docker_bin_dirname: "{{ openwrt_imagebuilder_docker_workdir }}/images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
+
+openwrt_devices: []
+openwrt_devices_list: []
+libremesh_target_subtarget_packages: []
+
+skip_libremesh_add_local_packages: false

@@ -1,0 +1,7 @@
+
+[Peer]
+# {{ hostvars[item_lime_mac.lime_mac].hostname }}
+PublicKey = {{ hostvars[item_lime_mac.lime_mac].vpn_wg0_publickey }}
+Endpoint = 0.0.0.0:51800
+AllowedIPs = {{ vpn_wg0_network }}.{{ hostvars[item_lime_mac.lime_mac].ip_host }}/32
+

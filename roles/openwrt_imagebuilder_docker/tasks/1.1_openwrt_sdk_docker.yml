@@ -1,0 +1,24 @@
+---
+- name: Check if local packages are already compiled
+  ansible.builtin.stat:
+    path: "{{ openwrt_sdk_docker_workdir }}/bin/packages/x86_64/profiles/Packages.gz"
+  register: local_packages_are_compiled
+    
+- name: Compile local packages with OpenWrt SDK docker (increase time of build)
+  ansible.builtin.include_role: 
+    name: openwrt_sdk_docker
+  when: (local_packages_are_compiled.stat.exists == true and force_openwrt_sdk_rebuild_local_packages )
+    or (local_packages_are_compiled is not defined)
+
+- name: Register fact openwrt_sdk_path
+  ansible.builtin.set_fact:
+    openwrt_sdk_path: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: Adjust permissions
+  become: yes
+  ansible.builtin.file:
+    path: "{{ openwrt_sdk_path }}/bin"
+    state: directory
+    recurse: yes
+    owner: "{{ openwrt_build_user }}"
+    group: "{{ openwrt_build_user }}"

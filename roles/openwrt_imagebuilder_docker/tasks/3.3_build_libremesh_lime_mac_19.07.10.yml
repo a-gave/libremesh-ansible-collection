@@ -1,0 +1,34 @@
+---
+- name: 2.3.1 - Ensure lime-mac path exist
+  file:
+    path: "{{ openwrt_imagebuilder_docker_files_dir }}/etc/config/"
+    state: directory
+
+- name: 2.3.2 - Add lime-mac to /files
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/lime-mac/{{item_lime_mac.lime_mac}}"
+    dest: "{{ openwrt_imagebuilder_docker_files_dir }}/etc/config/"
+
+## openwrt 19.07.10 default user 'build'
+- name: 2.3.3 - Adjust permissions
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "chown -R build:build /files/*"
+
+- name: 2.3.4 - Build lime_mac {{ item_lime_mac.lime_mac }}
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "make image PROFILE='{{openwrt_device.name}}'
+      PACKAGES='{{ libremesh_version_packages_list | default('') }} 
+        {{ libremesh_target_subtarget_packages_list | default('') }} 
+        {{ libremesh_devices_packages_list | default('') }}
+        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}
+        {{ item_lime_mac.packages | default('') }}'
+      BIN_DIR='/images/lime-mac/{{ item_lime_mac.lime_mac }}' 
+      FILES='/files/'
+      EXTRA_IMAGE_NAME='{{item_lime_mac.lime_mac}}'"
+
+- name: 2.3.5 - clean - lime-mac
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "rm -rf /files/*"

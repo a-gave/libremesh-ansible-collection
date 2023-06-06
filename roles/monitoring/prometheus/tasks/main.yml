@@ -1,0 +1,14 @@
+---
+- name: Define list
+  include_tasks: define_list.yml
+
+- name: Install Prometheus
+  ansible.builtin.import_role:
+    name: prometheus.prometheus.prometheus
+
+- name: Ensure Prometheus Service is running
+  service:
+    name: prometheus
+    state: restarted
+    enabled: yes
+

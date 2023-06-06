@@ -1,0 +1,9 @@
+node_remote:
+{% for target in groups['libremesh_devices'] %}
+{% if hostvars[target].vpn_wg0_address is defined %}
+  - targets: ['{{ vpn_wg0_network }}.{{ hostvars[target].ip_host }}:9090']
+    labels:
+      host: '{{ hostvars[target].hostname }}'
+      lime_mac: '{{ hostvars[target].lime_mac }}'
+{% endif %}
+{% endfor %}

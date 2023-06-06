@@ -1,0 +1,80 @@
+---
+- name: 2.1 - [Warn] Stop and remove all existing openwrt-imagebuilder-docker containers and their's volumes
+  ansible.builtin.shell:
+    cmd: docker ps -a | grep "openwrt\/imagebuilder" &> /dev/null &&
+      docker stop $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') &&
+      docker rm -vf $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') 
+  ignore_errors: true
+
+- name: 2.2 - Ensure output dir for images exists
+  file:
+    path: "{{ openwrt_imagebuilder_docker_bin_dirname }}"
+    state: directory
+
+- name: 2.3 - Ensure additional files path exists
+  file:
+    path: "{{ openwrt_imagebuilder_docker_files_dir }}"
+    state: directory
+
+- name: Start docker container {{ openwrt_imagebuilder_docker_container }}
+  ansible.builtin.shell: 
+    cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
+      -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
+      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/" {{ openwrt_imagebuilder_docker_image }}
+  when: libremesh_local_packages is not defined
+
+## local packages
+- name: Start docker container {{ openwrt_imagebuilder_docker_container }} with local packages
+  ansible.builtin.shell: 
+    cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
+      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/"
+      -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
+      -v "{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles/:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
+  when: libremesh_local_packages is defined
+
+- name: Add Libremesh Feeds of lime-packages in repositories.conf and add libremesh.org public key
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "echo 'src/gz libremesh https://feed.libremesh.org/{{ libremesh_version }}' >> repositories.conf 
+      && echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b 
+      && echo 'RWSnGzyChavSiyQ+vLk3x7F0NqcLa4kKyXCdriThMhO78ldHgxGljM/8' >> keys/a71b3c8285abd28b"
+
+- name: Add Libremesh Feeds of network-profiles in repositories.conf
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "echo 'src/gz profiles https://feed.libremesh.org/profiles' >> repositories.conf"
+  when: libremesh_local_packages is not defined
+
+## local packages
+- name: Add Libremesh Feeds of local_packages in repositories.conf and add local key
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "echo 'src/gz local_packages file:/local_packages/profiles' >> repositories.conf
+      && echo 'untrusted comment signed by local_key $(cat {{ openwrt_sdk_path }}/key-build.pub.id)' > keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id) 
+      && echo '$(tail -1 {{ openwrt_sdk_path }}/key-build.pub)' >> keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id)"
+  when: libremesh_local_packages is defined
+
+## local packages
+- name: Adjust permissions
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "chown -R buildbot:buildbot /local_packages/ /images/"
+  when: libremesh_local_packages is defined
+
+- name: Append VERSION_DIST and VERSION_NUMBER to .config
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "echo 'CONFIG_VERSION_DIST={{ version_dist }}' >> .config
+      && echo 'CONFIG_VERSION_NUMBER={{ version_number }}' >> .config"
+
+- name: Build Libremesh
+  ansible.builtin.include_tasks: 3.1_build_libremesh_devices.yml
+  loop: "{{ openwrt_devices | default([]) }}"
+  loop_control:
+    loop_var: openwrt_device
+
+- name: Stop and Remove docker container {{ openwrt_imagebuilder_docker_container }} and it's volumes
+  ansible.builtin.shell:
+    cmd: docker stop {{ openwrt_imagebuilder_docker_container }}; 
+      docker rm -vf {{ openwrt_imagebuilder_docker_container }}
+  ignore_errors: true

@@ -1,0 +1,55 @@
+---
+# Download and extract OpenWrt sdk
+# 
+# Example download file:
+# https://downloads.openwrt.org/releases/22.03.5/targets/ath79/generic/openwrt-sdk-22.03.5-ath79-generic_gcc-11.2.0_musl.Linux-x86_64.tar.xz
+
+
+- name: 2.1 - Check if Openwrt sdk {{ openwrt_version }} {{ openwrt_target }}_{{ openwrt_subtarget }} exists
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}_*.Linux-x86_64.tar.xz"
+  register: openwrt_sdk_downloaded
+
+- name: 2.2 - Download Openwrt sdk
+  ansible.builtin.shell:
+    cmd: "wget -nd --no-parent -r https://downloads.openwrt.org/releases/{{ openwrt_version }}/targets/{{ openwrt_target }}/{{ openwrt_subtarget }}/ -A 'openwrt-sdk-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}_*.Linux-x86_64.tar.xz'"
+  args:
+    chdir: "{{ openwrt_sdk_download_dir }}"
+  when: not openwrt_sdk_downloaded.files
+  
+- name: 2.3 - Register Openwrt sdk {{ openwrt_version }} {{ openwrt_target }}_{{ openwrt_subtarget }} path compressed
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}_*.Linux-x86_64.tar.xz"
+  register: openwrt_sdk_path_compressed
+
+- name: 2.4 - Check if a copy already extracted exist
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}_*.Linux-x86_64"
+  register: openwrt_sdk_path
+
+- name: 2.5 - Extract sdk
+  ansible.builtin.shell:
+    cmd: "tar -xvf {{ openwrt_sdk_path_compressed.files.0.path }}"
+  args:
+    chdir: "{{ openwrt_sdk_download_dir }}"
+  when: openwrt_sdk_path.matched == 0
+
+- name: 2.6 - Discover OpenWrt sdk name
+  ansible.builtin.find:
+    path: "{{ openwrt_sdk_download_dir }}"
+    file_type: directory
+    patterns: 
+     - "openwrt-sdk-{{ openwrt_version }}-{{ openwrt_target }}-{{ openwrt_subtarget }}_*.Linux-x86_64"
+  register: openwrt_sdk_pathname
+
+- name: 2.7 - Register fact openwrt_sdk_path
+  ansible.builtin.set_fact:
+    openwrt_sdk_path: "{{ openwrt_sdk_pathname.files.0.path }}"
+

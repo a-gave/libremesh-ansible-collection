@@ -1,0 +1,17 @@
+---
+# - name: 1.1.1 Add each device as host in memory
+#   ansible.builtin.add_host:
+#     ansible_host: "{{ item_lime_mac.lime_mac }}"
+#     hostname: "{{ item_lime_mac.hostname | default('') }}"
+#     inventory_hostname: "{{ item_lime_mac.lime_mac }}"
+#   ignore_errors: true
+#   delegate_to: localhost
+
+- name: 1.1.2 Write each device in hosts file 
+  ansible.builtin.lineinfile:
+    path: "{{ playbook_dir }}/hosts"
+    line: "    {{ item_lime_mac.lime_mac }}:"
+  ignore_errors: true
+  delegate_to: localhost
+
+
