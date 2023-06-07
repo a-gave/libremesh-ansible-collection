@@ -1,8 +1,8 @@
 # Ansible Collection - libremesh.libremesh
 
 
-Install this collection
+Requirements
 ------------
+Install requirements
 
-    mkdir -p ~/.ansible/collections/ansible_collections/libremesh
-    git clone https://gitlab.com/a-gave/libremesh-ansible-collection.git ~/.ansible/collection/ansible_collections/libremesh/libremesh
+	ansible-galaxy install -r requirements.yml
