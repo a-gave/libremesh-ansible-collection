@@ -35,11 +35,11 @@
   loop: "{{ build_targets }}"
   loop_control:
     loop_var: build_target
-  when: not openwrt_sdk_build_only_x86_64
+  when: not force_openwrt_sdk_build_only_x86_64
 
 - name: Compile 
   ansible.builtin.include_tasks: 1_compile_docker.yml
   vars:
     openwrt_target: "x86"
     openwrt_subtarget: "64"
-  when: openwrt_sdk_build_only_x86_64
+  when: force_openwrt_sdk_build_only_x86_64

@@ -1,6 +1,6 @@
 ---
 - name: 4.1 - Compile local packages
-  ansible.builtin.shell: "make package/feeds/profiles/{{ libremesh_local_package }}/compile {{ make_nproc }}"
+  ansible.builtin.shell: "make package/{{ libremesh_local_package }}/compile {{ make_nproc }}"
   args:
     chdir: "{{ openwrt_sdk_path }}"
   loop: "{{ libremesh_local_packages }}"

@@ -38,7 +38,7 @@
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
       -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/"
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
-      -v "{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles/:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
+      -v "{{ openwrt_sdk_local_packages_dir }}:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
   when: libremesh_local_packages is defined
 
 # openwrt 19.07.10 non existent keys
@@ -49,6 +49,7 @@
       && mkdir keys/
       && echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b 
       && echo 'RWSnGzyChavSiyQ+vLk3x7F0NqcLa4kKyXCdriThMhO78ldHgxGljM/8' >> keys/a71b3c8285abd28b"
+  # when: libremesh_compiled_local_packages is not defined
 
 - name: Add Libremesh Feeds of network-profiles in repositories.conf
   ansible.builtin.shell: 

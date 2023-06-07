@@ -1,7 +1,7 @@
 ---
 
 # List of device per interface
-wireguard_wg1_devices_list_local_file: "{{ playbook_dir }}/wg1.conf"
+wireguard_wg1_devices_list_local_file: "{{ playbook_dir }}/tmp/data/wg1.conf"
 
 # Skip Options
 skip_init_vars_lime_mac: false

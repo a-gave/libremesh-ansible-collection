@@ -2,7 +2,7 @@
 
 # Compile options
 ## Build local_packages only for x86_64, default true
-openwrt_sdk_build_only_x86_64: true
+force_openwrt_sdk_build_only_x86_64: true
 make_nproc: "-j$(nproc)"
 
 # OpenWrt sdk paths
