@@ -23,7 +23,7 @@
 
 - name: Compile local packages with OpenWrt SDK (increase time of build)
   ansible.builtin.include_tasks: 1_compile_local_packages.yml
-  when: libremesh_local_packages is defined
+  when: libremesh_local_packages != []
 
 - name: Loops build_targets
   ansible.builtin.include_tasks: 2_prepare.yml

@@ -19,7 +19,8 @@ openwrt_imagebuilder_docker_bin_dirname: "{{ openwrt_imagebuilder_docker_workdir
 openwrt_imagebuilder_docker_image: openwrt/imagebuilder:{{openwrt_target}}-{{openwrt_subtarget}}-v{{openwrt_version}}
 openwrt_imagebuilder_docker_container: openwrt_imagebuilder_{{openwrt_target}}-{{openwrt_subtarget}}_v{{openwrt_version}}
 
-# OpenWrt sdk
+# OpenWrt SDK
+libremesh_local_packages: []
 openwrt_sdk_local_packages_dir: "{{ openwrt_sdk_path }}/bin/packages/$(ls {{ openwrt_sdk_path }}/bin/packages/)/profiles"
 openwrt_imagebuilder_use_openwrt_sdk_non_docker: false
 

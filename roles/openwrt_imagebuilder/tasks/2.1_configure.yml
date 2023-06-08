@@ -26,14 +26,14 @@
     path: "{{ openwrt_imagebuilder_path }}/repositories.conf"
     block: |
       src/gz profiles https://feed.libremesh.org/profiles
-  when: libremesh_local_packages is not defined
+  when: libremesh_local_packages == []
 
 - name: Add Libremesh feeds of local_packages in repositories.conf
   ansible.builtin.blockinfile:
     path: "{{ openwrt_imagebuilder_path }}/repositories.conf"
     block: |
       src/gz local_packages file:{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles
-  when: libremesh_local_packages is defined
+  when: libremesh_local_packages != []
 
 - name: Register local_packages public key id
   ansible.builtin.shell:

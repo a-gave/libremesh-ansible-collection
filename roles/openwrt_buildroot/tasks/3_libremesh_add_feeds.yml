@@ -12,7 +12,7 @@
   file:
     path: "{{ libremesh_community_dir }}"
     state: directory
-  when: not skip_libremesh_add_local_packages and libremesh_local_packages is defined
+  when: not skip_libremesh_add_local_packages and libremesh_local_packages != []
   tags:
     - libremesh_add_local_packages 
 
@@ -22,6 +22,6 @@
     dest: "{{ libremesh_community_dir }}/"
     delete: yes
   notify: "Update and install feeds"
-  when: not skip_libremesh_add_local_packages and libremesh_local_packages is defined
+  when: not skip_libremesh_add_local_packages and libremesh_local_packages != []
   tags:
     - libremesh_add_local_packages

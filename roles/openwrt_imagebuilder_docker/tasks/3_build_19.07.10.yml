@@ -30,7 +30,7 @@
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
       -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/" {{ openwrt_imagebuilder_docker_image }}
-  when: libremesh_local_packages is not defined
+  when: libremesh_local_packages == []
 
 ## local packages
 - name: Start docker container {{ openwrt_imagebuilder_docker_container }} with local packages
@@ -39,7 +39,7 @@
       -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/"
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
       -v "{{ openwrt_sdk_local_packages_dir }}:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
-  when: libremesh_local_packages is defined
+  when: libremesh_local_packages != []
 
 # openwrt 19.07.10 non existent keys
 - name: Add Libremesh Feeds of lime-packages in repositories.conf and add libremesh.org public key
@@ -55,7 +55,7 @@
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "echo 'src/gz profiles https://feed.libremesh.org/profiles' >> repositories.conf"
-  when: libremesh_local_packages is not defined
+  when: libremesh_local_packages == []
 
 ## local packages
 - name: Add Libremesh Feeds of local_packages in repositories.conf and add local key
@@ -64,14 +64,14 @@
       "echo 'src/gz local_packages file:/local_packages/profiles' >> repositories.conf
       && echo 'untrusted comment signed by local_key $(cat {{ openwrt_sdk_path }}/key-build.pub.id)' > keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id) 
       && echo '$(tail -1 {{ openwrt_sdk_path }}/key-build.pub)' >> keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id)"
-  when: libremesh_local_packages is defined
+  when: libremesh_local_packages != []
 
 ## openwrt 19.07.10 default user 'build'
 - name: Adjust permissions
   ansible.builtin.shell: 
     cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
       "chown -R build:build /images/ /files/ 
-      {% if (libremesh_local_packages is defined) %} /local_packages/ {% endif %}"
+      {% if (libremesh_local_packages != []) %} /local_packages/ {% endif %}"
 
 - name: Append VERSION_DIST and VERSION_NUMBER to .config
   ansible.builtin.shell: 
