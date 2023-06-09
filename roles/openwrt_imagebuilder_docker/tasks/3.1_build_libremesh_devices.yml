@@ -3,6 +3,15 @@
   ansible.builtin.include_tasks: 3.0_configure.yml  
   when: openwrt_device.configs is defined
 
+- name: Ensure output dir exists
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "mkdir -p /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"
+
+- name: Debug output dir
+  debug:
+    msg: "/images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"
+
 - name: 3.1.1 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
