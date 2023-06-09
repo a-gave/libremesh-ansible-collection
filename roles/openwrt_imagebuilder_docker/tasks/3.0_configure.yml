@@ -1,5 +1,5 @@
 ---
-- name: Append VERSION_DIST and VERSION_NUMBER to .config
+- name: Append device specific configs to .config
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "echo 'CONFIG_{{ device_config }}=y' >> .config"

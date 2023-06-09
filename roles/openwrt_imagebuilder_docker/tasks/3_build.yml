@@ -36,6 +36,7 @@
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "echo 'src/gz libremesh https://feed.libremesh.org/{{ libremesh_version }}' >> repositories.conf 
+      && mkdir keys/
       && echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b 
       && echo 'RWSnGzyChavSiyQ+vLk3x7F0NqcLa4kKyXCdriThMhO78ldHgxGljM/8' >> keys/a71b3c8285abd28b"
 
@@ -54,13 +55,6 @@
       && echo '$(tail -1 {{ openwrt_sdk_path }}/key-build.pub)' >> keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id)"
   when: libremesh_local_packages != []
 
-## local packages
-- name: Adjust permissions
-  ansible.builtin.shell: 
-    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
-      "chown -R buildbot:buildbot /files/ /images/
-      {% if (libremesh_local_packages != []) %} /local_packages/ {% endif %}"
-  
 - name: Append VERSION_DIST and VERSION_NUMBER to .config
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 

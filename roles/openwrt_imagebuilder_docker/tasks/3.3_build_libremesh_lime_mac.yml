@@ -1,8 +1,12 @@
 ---
 - name: 2.3.1 - Ensure lime-mac path exist
+  become: yes
   file:
     path: "{{ openwrt_imagebuilder_docker_files_dir }}/etc/config/"
     state: directory
+    recurse: yes
+    owner: "{{ openwrt_build_user }}"
+    group: "{{ openwrt_build_user }}"
 
 - name: 2.3.2 - Add lime-mac to /files
   ansible.posix.synchronize:
@@ -12,7 +16,7 @@
 - name: 2.3.3 - Adjust permissions
   ansible.builtin.shell: 
     cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
-      "chown -R buildbot:buildbot /files/*"
+      "chown -R {{ openwrt_imagebuilder_docker_user }}:{{ openwrt_imagebuilder_docker_user}} /files/*"
 
 - name: 2.3.4 - Build lime_mac {{ item_lime_mac.lime_mac }}
   ansible.builtin.shell: 
