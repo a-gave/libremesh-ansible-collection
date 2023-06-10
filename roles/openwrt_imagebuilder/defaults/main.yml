@@ -6,6 +6,8 @@ version_dist: LibreMesh
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
+openwrt_build_dirname: "libremesh_{{libremesh_version}}"
+openwrt_build_dir: "{{openwrt_dir}}/{{openwrt_build_dirname}}"
 
 openwrt_imagebuilder_download_dir: "{{ openwrt_dir }}/openwrt_imagebuilder"
 openwrt_imagebuilder_bin_dirname: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/targets/{{ openwrt_target }}_{{ openwrt_subtarget }}"
