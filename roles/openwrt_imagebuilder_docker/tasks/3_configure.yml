@@ -41,7 +41,7 @@
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "echo 'src/gz libremesh https://feed.libremesh.org/{{ libremesh_version }}' >> repositories.conf 
       && mkdir keys/
-      && echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b 
+      ; echo 'untrusted comment signed by libremesh.org key a71b3c8285abd28b' > keys/a71b3c8285abd28b 
       && echo 'RWSnGzyChavSiyQ+vLk3x7F0NqcLa4kKyXCdriThMhO78ldHgxGljM/8' >> keys/a71b3c8285abd28b"
 
 - name: Add Libremesh Feeds of network-profiles in repositories.conf
