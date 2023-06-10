@@ -1,17 +1,8 @@
 ---
-# - name: Assert openwrt version is greater than 19.07
-#   ansible.builtin.assert:
-#     that: openwrt_version >= 19.07
-#     msg: "This module only works with openwrt version greater than 19.07"
-
 - name: Register fact this_role_path
   ansible.builtin.set_fact:
     this_role_path: "{{ role_path }}"
     this_role_name: "{{ role_name }}"
-
-- name: Install Requirements
-  ansible.builtin.include_tasks: 0_requirements.yml
-  when: not skip_install_openwrt_imagebuilder_docker_requirements
 
 - name: Include all variables
   ansible.builtin.include_role:
@@ -20,6 +11,10 @@
 - name: Register fact build_targets
   ansible.builtin.set_fact:
     build_targets: "{{ openwrt_targets | default(libremesh_devices) }}"
+
+- name: Install Requirements
+  ansible.builtin.include_tasks: 0_requirements.yml
+  when: not skip_install_openwrt_imagebuilder_docker_requirements
 
 - name: Compile local packages with OpenWrt SDK (increase time of build)
   ansible.builtin.include_tasks: 1_compile_local_packages.yml

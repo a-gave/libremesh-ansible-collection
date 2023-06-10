@@ -1,20 +1,24 @@
 ---
-- name: 2.1 - [Warn] Stop and remove all existing openwrt-imagebuilder-docker containers and their's volumes
+- name: "[Warn] Stop and remove all existing openwrt-imagebuilder-docker containers and their's volumes"
   ansible.builtin.shell:
     cmd: docker ps -a | grep "openwrt\/imagebuilder" &> /dev/null &&
       docker stop $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') &&
       docker rm -vf $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') 
   ignore_errors: true
 
-- name: 2.2 - Ensure output dir for images exists
+- name: Ensure output dir for images exists
   file:
     path: "{{ openwrt_imagebuilder_docker_bin_dirname }}"
     state: directory
 
-- name: 2.3 - Ensure additional files path exists
+- name: Ensure additional files path exists
   file:
     path: "{{ openwrt_imagebuilder_docker_files_dir }}"
     state: directory
+
+- name: Pull docker image
+  ansible.builtin.shell: 
+    cmd: docker pull {{ openwrt_imagebuilder_docker_image }}
 
 - name: Start docker container {{ openwrt_imagebuilder_docker_container }}
   ansible.builtin.shell: 
@@ -61,14 +65,17 @@
       "echo 'CONFIG_VERSION_DIST={{ version_dist }}' >> .config
       && echo 'CONFIG_VERSION_NUMBER={{ version_number }}' >> .config"
 
-- name: Build Libremesh
-  ansible.builtin.include_tasks: 3.1_build_libremesh_devices.yml
-  loop: "{{ openwrt_devices | default([]) }}"
-  loop_control:
-    loop_var: openwrt_device
+- name: Ensure output dir exists
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "mkdir -p /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"
 
-- name: Stop and Remove docker container {{ openwrt_imagebuilder_docker_container }} and it's volumes
-  ansible.builtin.shell:
-    cmd: docker stop {{ openwrt_imagebuilder_docker_container }}; 
-      docker rm -vf {{ openwrt_imagebuilder_docker_container }}
-  ignore_errors: true
+- name: Adjust permissions
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "chown -R {{ openwrt_imagebuilder_docker_user }}:{{ openwrt_imagebuilder_docker_user}} /files/ /images/
+      {% if (libremesh_local_packages != []) %} /local_packages/ {% endif %}"
+
+- name: Debug output dir
+  debug:
+    msg: "/images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"
