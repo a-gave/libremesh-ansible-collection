@@ -10,6 +10,7 @@ default_vpn_wg0_listenport: 51800
 
 # Configuration
 target_configs: ''
+libremesh_local_packages: []
 
 # Libremesh
 version_dist: LibreMesh
