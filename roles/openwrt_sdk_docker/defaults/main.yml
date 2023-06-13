@@ -9,8 +9,6 @@ make_nproc: "-j$(nproc)"
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
-openwrt_build_dirname: "libremesh_{{ libremesh_version }}"
-openwrt_build_dir: "{{ openwrt_dir }}/{{ openwrt_build_dirname }}"
 
 openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker/"
 openwrt_sdk_docker_local_packages_sources_mountdir: "{{ openwrt_sdk_docker_workdir }}/local_packages_sources/"

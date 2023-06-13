@@ -6,11 +6,11 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - cpe510-520-v1
-  - ubnt-lbe-m5
-  - ubnt-loco-m-xw
-  - ubnt-nano-m-xw
-  - ubnt-nano-m
+  - name: cpe510-520-v1
+  - name: ubnt-lbe-m5
+  - name: ubnt-loco-m-xw
+  - name: ubnt-nano-m-xw
+  - name: ubnt-nano-m
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

@@ -1,47 +1,89 @@
 
 
 # HELPERS
-_libremesh_openwrt_versions_path: libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}
-_openwrt_target_subtarget_path: "{{openwrt_target}}_{{openwrt_subtarget}}"
+libremesh_openwrt_versions_path: libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}
+openwrt_target_subtarget_path: "{{openwrt_target}}_{{openwrt_subtarget}}"
+community_vars_file_path: "{{ libremesh_community }}/{{ libremesh_community_variables_file }}"
 
 # VARIABLES PATHS
-# Default paths from which to include variables
+# default paths from which to include variables
 
-## Define packages related to LibreMesh and OpenWrt versions
-libremesh_version_vars: "{{role_path}}/../../target/{{ _libremesh_openwrt_versions_path }}/main.yml"
+# define packages related to LibreMesh and OpenWrt versions
+libremesh_version_vars: "{{role_path}}/../../target/{{ libremesh_openwrt_versions_path }}/main.yml"
 
-## Define packages related to LibreMesh and OpenWrt versions, that address devices on specific target_subtarget
-libremesh_target_vars: "{{role_path}}/../../target/{{ _libremesh_openwrt_versions_path }}/{{ _openwrt_target_subtarget_path }}.yml"
+# define packages related to LibreMesh and OpenWrt versions, that address devices on specific target_subtarget
+libremesh_target_vars: "{{role_path}}/../../target/{{ libremesh_openwrt_versions_path }}/{{ openwrt_target_subtarget_path }}.yml"
 
-## Community variables defined on main file
-libremesh_community_vars: "community/{{ _libremesh_openwrt_versions_path }}/{{libremesh_community}}/main.yml" 
+# community variables defined on main file
+libremesh_community_vars: "community/{{ libremesh_openwrt_versions_path }}/{{ libremesh_community }}/main.yml" 
 
-## Community variables defined on selected file
-libremesh_community_file_vars: "community/{{ _libremesh_openwrt_versions_path }}/{{libremesh_community}}/{{ libremesh_community_variables_file }}.yml" 
+# community variables defined on selected file
+libremesh_community_file_vars: "community/{{ libremesh_openwrt_versions_path }}/{{community_vars_file_path }}.yml" 
 
 
 # DEBUG OPTIONS
-##
-## Path where to save log
+# debug directory
 debug_logpath: "{{ playbook_dir }}/tmp/log"
-##
-debug_logfilename: "$(date +%Y%m%d%H%M)_{{ this_role_name | default('') }}_libremesh_{{ libremesh_version }}_{{ _openwrt_target_subtarget_path }}.log"
-##
-## Standard name for every log file
-debug_logfile: "{{ debug_logpath }}/{{ debug_logfilename }}"
+
+# debug filename
+debug_logfilename: "{{ '%Y%m%d%H%M%S' | strftime }}_{{ this_role_name | default('') }}_libremesh_{{ libremesh_version }}_{{ openwrt_target_subtarget_path }}.log"
+
+# debug file path
+debug_logfile_template: "{{ debug_logpath }}/{{ debug_logfilename }}"
 
 
+# default empty values
+this_role_debug: ''
 
-version_dist: "LibreMesh"
-version_number: ""
-
-# openwrt_build_dir: ''
-# openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/openwrt_imagebuilder_{{ openwrt_version }}"
-# openwrt_imagebuilder_docker_files_dir: "{{ openwrt_imagebuilder_docker_workdir }}/files"
-# openwrt_imagebuilder_docker_bin_dirname: "{{ openwrt_imagebuilder_docker_workdir }}/images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
-
-openwrt_devices: []
 openwrt_devices_list: []
+
 libremesh_target_subtarget_packages: []
 
+
+# skip options
+
 skip_libremesh_add_local_packages: false
+
+
+# relative output dir
+openwrt_bin_dir: "/images/{{ community_vars_file_path }}/targets/{{ openwrt_target_subtarget_path }}/"
+
+openwrt_lime_mac_bin_dir: 
+
+
+# default of LibreMesh
+version_dist: "LibreMesh"
+
+version_number: "{{ libremesh_version | default('')}}"
+
+libremesh_community: libremesh
+
+libremesh_community_variables_file: stable
+
+libremesh_build_mode: stable
+
+libremesh_version: "{{ libremesh_release['stable'] }}"
+
+
+# LibreMesh Releases
+libremesh_release:
+  stable: 2023.1 # Unreleased, compatible with openwrt 22
+  old_stable: 2020.3 # Released 2023, compatible with openwrt 19 and lower
+
+libremesh_release_archive:
+  'librerouteros_v1.5': librerouteros # ^0bddc6b50da6f13b1fd20a28f5c4d557c3819737 Released: Thu Mar 17 2022
+  '2020': 2020.1 # Released: Fri Dec 11 2020
+
+
+# OpenWrt releases
+openwrt_version: "{{ openwrt_release['stable'] }}"
+
+openwrt_repository: https://git.openwrt.org/openwrt/openwrt.git
+
+openwrt_release:
+  stable: 22.03.5 # Mon, 1. May 2023
+  old_stable: 21.02.7 # Mon, 1 May 2023
+
+openwrt_release_archive:
+  '19': 19.07.10
+  '18': 18.06

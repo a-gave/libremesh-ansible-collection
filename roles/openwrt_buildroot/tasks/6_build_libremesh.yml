@@ -2,15 +2,16 @@
 - name: build - Clean Openwrt target images
   shell: make target/linux/clean
   args:
-    chdir: "{{ openwrt_build_dir }}"
+    chdir: "{{ openwrt_buildroot_dir }}"
   when: force_build_openwrt_target_clean
   tags:
     - build_openwrt_target_clean
 
 - name: "6.0 - Build {{ version_dist }} - {{ openwrt_target }}_{{ openwrt_subtarget }}" 
-  shell: "make -j $(nproc) {{ openwrt_make_debug_level }} BIN_DIR={{ openwrt_bin_dir }}/targets"
+  shell: "make -j $(nproc) {{ openwrt_make_debug_level }} 
+    BIN_DIR={{ openwrt_buildroot_bin_dir }}"
   args:
-    chdir: "{{ openwrt_build_dir }}"
+    chdir: "{{ openwrt_buildroot_dir }}"
   when: not skip_build_openwrt_devices
   tags:
     - build_openwrt_devices

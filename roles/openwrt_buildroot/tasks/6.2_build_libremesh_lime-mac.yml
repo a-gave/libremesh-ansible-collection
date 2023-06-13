@@ -1,38 +1,38 @@
 ---
 - name: 6.2.1 - Ensure lime-mac path exist
   file:
-    path: "{{ openwrt_build_dir }}/files/etc/config/"
+    path: "{{ openwrt_buildroot_dir }}/files/etc/config/"
     state: directory
 
 - name: 6.2.2 - Add lime-mac to /files
   ansible.posix.synchronize:
     src: "{{ playbook_dir }}/lime-mac/{{ mesh_device_item.lime_mac }}"
-    dest: "{{ openwrt_build_dir }}/files/etc/config/"
+    dest: "{{ openwrt_buildroot_dir }}/files/etc/config/"
 
 - name: 6.2.3 - Select lime-mac device
   blockinfile:
-    path: "{{ openwrt_build_dir }}/.config"
+    path: "{{ openwrt_buildroot_dir }}/.config"
     block: "{{ lookup('ansible.builtin.template', 'libremesh_build_lime-mac.j2') }}"
   vars:
     device: "{{ openwrt_device_item }}"
     packages: "{{ mesh_device_item.packages | '' }}"
 
 - name: 6.2.4 - configure - Expand to full config via make defconfig
-  shell: "cd {{ openwrt_build_dir }}; make defconfig"
+  shell: "cd {{ openwrt_buildroot_dir }}; make defconfig"
 
 - name: 6.2.5 - clean - lime-mac
   file:
-    path: "{{ openwrt_build_dir }}/lime-mac/{{ mesh_device_item.lime_mac }}"
+    path: "{{ openwrt_buildroot_dir }}/lime-mac/{{ mesh_device_item.lime_mac }}"
     state: absent
 
 - name: "6.2.6 - build - Build firmware of {{ mesh_device_item.lime_mac }}"
   shell: make -j $(nproc) target/install \
     EXTRA_IMAGE_NAME="{{ mesh_device_item.lime_mac }}" \
-    BIN_DIR="{{openwrt_build_dir}}/images/{{libremesh_community}}/{{libremesh_community_variables_file}}/lime-mac/{{ mesh_device_item.lime_mac }}"
+    BIN_DIR="{{openwrt_buildroot_dir}}/images/{{community_vars_file_path }}/lime-mac/{{ mesh_device_item.lime_mac }}"
   args:
-    chdir: "{{ openwrt_build_dir }}"
+    chdir: "{{ openwrt_buildroot_dir }}"
   tags:
     - build_openwrt
 
 - name: 6.2.7 - Clean /files
-  shell: "rm -rf {{ openwrt_build_dir }}/files/*"
+  shell: "rm -rf {{ openwrt_buildroot_dir }}/files/*"

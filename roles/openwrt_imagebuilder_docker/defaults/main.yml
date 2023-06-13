@@ -8,15 +8,14 @@ extra_image_name: ''
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
-openwrt_build_dirname: "libremesh_{{libremesh_version}}"
-openwrt_build_dir: "{{openwrt_dir}}/{{openwrt_build_dirname}}"
 
 # output dir for images
 openwrt_imagebuilder_docker_container_bin_dir: "targets/{{ openwrt_target }}_{{ openwrt_subtarget }}"
 
 openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/openwrt_imagebuilder_{{ openwrt_version }}"
 openwrt_imagebuilder_docker_files_dir: "{{ openwrt_imagebuilder_docker_workdir }}/files"
-openwrt_imagebuilder_docker_bin_dirname: "{{ openwrt_imagebuilder_docker_workdir }}/images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
+openwrt_imagebuilder_docker_bin_dirname: "images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
+openwrt_imagebuilder_docker_bin_dir: "{{ openwrt_imagebuilder_docker_workdir }}/{{ openwrt_imagebuilder_docker_bin_dirname }}"
 
 # OpenWrt ImageBuilder docker options
 openwrt_imagebuilder_docker_image: openwrt/imagebuilder:{{openwrt_target}}-{{openwrt_subtarget}}-v{{openwrt_version}}

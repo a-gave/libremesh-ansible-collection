@@ -3,14 +3,34 @@
   ansible.builtin.include_tasks: 4.1_configure_device.yml  
   when: openwrt_device.configs is defined
 
+- name: 4.1 - Apply device specific packages
+  ansible.builtin.include_tasks: 4.1_configure_device_packages.yml  
+  when: openwrt_device.packages is defined
+
+- name: Register fact device_full_packages_list
+  ansible.builtin.set_fact:
+    openwrt_device_full_packages_list: "{{ libremesh_version_packages_list | default('') }} 
+        {{ libremesh_target_subtarget_packages_list | default('') }} 
+        {{ openwrt_device_packages_list_string | default('') }}
+        {{ libremesh_devices_packages_list | default('') }}
+        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
+
+- name: Print debug to file
+  blockinfile:
+    path: "{{ debug_logfile }}"
+    block: |
+      openwrt_device: {{ openwrt_device.name | default('') }}
+      openwrt_device_packages_list: {{ openwrt_device_full_packages_list | default('') }}
+      openwrt_device_configs_list: {{ openwrt_device_configs_list | default('') }}
+      --------------
+    marker: "# DEVICE {{openwrt_target}}_{{ openwrt_subtarget }}_{{ openwrt_device.name }} {mark} ANSIBLE MANAGED BLOCK"
+  delegate_to: localhost
+
 - name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "make image PROFILE='{{ openwrt_device.name }}'
-      PACKAGES='{{ libremesh_version_packages_list | default('') }} 
-        {{ libremesh_target_subtarget_packages_list | default('') }} 
-        {{ libremesh_devices_packages_list | default('') }}
-        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}'
+      PACKAGES='{{ openwrt_device_full_packages_list }}'
       BIN_DIR='/images/targets/{{ openwrt_target }}_{{ openwrt_subtarget }}' 
       FILES='/files/'
       EXTRA_IMAGE_NAME='{{ extra_image_name | default('') }}'"

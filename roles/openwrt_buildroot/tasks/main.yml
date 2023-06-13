@@ -8,13 +8,16 @@
   ansible.builtin.include_role:
     name: build
 
+- name: Register fact build_targets
+  ansible.builtin.set_fact:
+    build_targets: "{{ openwrt_targets | default(libremesh_devices) }}"
+
 - name: build - Build 
   ansible.builtin.include_tasks: 1_prebuild.yml
   vars:
     openwrt_target: "{{ build_target.openwrt_target }}"
     openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
-    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
-  loop: "{{ libremesh_devices }}"
+  loop: "{{ build_targets }}"
   loop_control:
     loop_var: build_target
 

@@ -8,7 +8,7 @@
 
 - name: Ensure output dir for images exists
   file:
-    path: "{{ openwrt_imagebuilder_docker_bin_dirname }}"
+    path: "{{ openwrt_imagebuilder_docker_bin_dir }}"
     state: directory
 
 - name: Ensure additional files path exists
@@ -24,14 +24,14 @@
   ansible.builtin.shell: 
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
-      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/" {{ openwrt_imagebuilder_docker_image }}
+      -v "{{ openwrt_imagebuilder_docker_bin_dir }}:/images/" {{ openwrt_imagebuilder_docker_image }}
   when: libremesh_local_packages == []
 
 ## local packages
 - name: Start docker container {{ openwrt_imagebuilder_docker_container }} with local packages
   ansible.builtin.shell: 
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
-      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/"
+      -v "{{ openwrt_imagebuilder_docker_bin_dir }}:/images/"
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
       -v "{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles/:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
   when: libremesh_local_packages != []

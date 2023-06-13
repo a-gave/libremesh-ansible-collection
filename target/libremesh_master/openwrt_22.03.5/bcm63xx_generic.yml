@@ -6,9 +6,10 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices: 
-  - name: sagem_fast-2704n
+  - name: d-link_dsl-274xb-f1
     packages: 
       - -procd-ujail
+    # communities: valsamoggia.ninux.org
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

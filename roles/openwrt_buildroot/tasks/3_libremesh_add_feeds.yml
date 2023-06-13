@@ -1,7 +1,7 @@
 ---
 - name: 3.1 - Add Libremesh feeds
   blockinfile:
-    path: "{{ openwrt_build_dir }}/feeds.conf"
+    path: "{{ openwrt_buildroot_dir }}/feeds.conf"
     block: "{{ libremesh_feeds }}"
   notify: "Update and install feeds"
   when: not skip_libremesh_install

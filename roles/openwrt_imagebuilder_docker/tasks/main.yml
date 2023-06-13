@@ -25,7 +25,6 @@
   vars:
     openwrt_target: "{{ build_target.openwrt_target }}"
     openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
-    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
   loop: "{{ build_targets }}"
   loop_control:
     loop_var: build_target

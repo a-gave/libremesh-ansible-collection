@@ -8,7 +8,7 @@
   ansible.builtin.include_tasks: 0_requirements.yml
   when: not skip_install_openwrt_imagebuilder_requirements
 
-- name: Include variables and print debug
+- name: Include variables
   ansible.builtin.include_role:
     name: build
 
@@ -25,7 +25,6 @@
   vars:
     openwrt_target: "{{ build_target.openwrt_target }}"
     openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
-    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
   loop: "{{ build_targets }}"
   loop_control:
     loop_var: build_target

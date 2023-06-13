@@ -9,6 +9,7 @@ libremesh_supported_devices:
   - name: sagem_fast-2704n
     packages: 
       - -procd-ujail
+    # communities: valsamoggia.ninux.org
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

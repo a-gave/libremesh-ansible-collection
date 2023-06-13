@@ -1,0 +1,14 @@
+---
+- name: Define list of device specific packages
+  ansible.builtin.set_fact: 
+    openwrt_device_packages_list: "{{ openwrt_device_packages_list | default([]) | union([device_package]) }}"
+  loop: "{{ openwrt_device.packages }}"
+  loop_control:
+    loop_var: device_package
+
+- name: Define printable list of device specific packages
+  ansible.builtin.set_fact: 
+    openwrt_device_packages_list_string: "{{ openwrt_device_packages_list | join(' ') | default([])  }}"
+  loop: "{{ openwrt_device.packages }}"
+  loop_control:
+    loop_var: device_package
