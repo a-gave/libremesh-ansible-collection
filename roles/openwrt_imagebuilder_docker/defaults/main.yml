@@ -30,7 +30,9 @@ openwrt_imagebuilder_use_openwrt_sdk_non_docker: false
 
 openwrt_sdk_dirname: libremesh_{{ version_number }}/openwrt_sdk
 openwrt_sdk_download_dir: "{{ openwrt_dir }}/{{ openwrt_sdk_dirname }}"
-openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker_{{ openwrt_version }}"
+
+openwrt_sdk_docker_dirname: "libremesh_{{ version_number }}/openwrt_sdk_docker_{{ openwrt_version }}"
+openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_sdk_docker_dirname }}"
 
 
 

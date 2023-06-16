@@ -38,6 +38,12 @@
   args:
     chdir: "{{ openwrt_sdk_docker_workdir }}"
 
+- name: 1.4 - Copy public key
+  ansible.builtin.shell: 
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:{{ openwrt_sdk_docker_container_workdir }}/key-build.pub .
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
 - name: 1.5 - cp feeds.conf.defaults feed.conf
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 

@@ -1,10 +1,10 @@
 ---
-- name: Set build only supported
+- name: Define openwrt_devices as libremesh_supported_devices
   ansible.builtin.set_fact:
     openwrt_devices: "{{ libremesh_supported_devices | default('all') }}"
   when: build_libremesh_supported_devices 
 
-- name: Set build only supported
+- name: Define openwrt_devices
   ansible.builtin.set_fact:
     openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
   when: not build_libremesh_supported_devices 

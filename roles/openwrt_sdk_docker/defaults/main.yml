@@ -11,7 +11,7 @@ openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
 openwrt_sdk_docker_dirname: libremesh_{{ version_number }}/openwrt_sdk_docker_{{ openwrt_version }}
 
-openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker_{{ openwrt_version }}"
+openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_sdk_docker_dirname }}"
 openwrt_sdk_docker_bin_dir: "{{ openwrt_sdk_docker_workdir }}/bin/"
 openwrt_sdk_docker_local_packages_sources_mountdir: "{{ openwrt_sdk_docker_workdir }}/local_packages"
 openwrt_sdk_docker_local_packages_sources_dir: /local_packages/
@@ -28,6 +28,6 @@ libremesh_feeds: |
 # Skip options
 skip_openwrt_sdk_install_requirements: false
 
-
+openwrt_sdk_docker_container_user: "buildbot"
 openwrt_sdk_docker_container_workdir: /builder
 openwrt_sdk_docker_container_bin_dir: "{{ openwrt_sdk_docker_container_workdir }}/bin/"
