@@ -57,7 +57,7 @@
   ansible.builtin.shell: 
     cmd: docker exec -u root {{ openwrt_sdk_docker_container }} sh -c 
       "cp -r /local_packages/* {{ openwrt_sdk_docker_local_packages_overwrite_dir }}
-      && chown -R buildbot:buildbot {{ openwrt_sdk_docker_container_bin_dir }}"
+      && chown -R {{ openwrt_sdk_docker_user }}:{{ openwrt_sdk_docker_user }} {{ openwrt_sdk_docker_container_bin_dir }}"
 
 - name: 1.9 - Update and install feeds - install local_packages
   ansible.builtin.shell: 
