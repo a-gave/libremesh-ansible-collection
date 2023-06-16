@@ -1,0 +1,22 @@
+
+
+openwrt_firmware_selector_repository: https://gitlab.com/openwrt/web/firmware-selector-openwrt-org
+
+openwrt_firmware_selector_version: 'v3.8.5'
+
+openwrt_firmware_selector_dir: '/opt/openwrt_firmware_selector'
+
+openwrt_firmware_selector_template_dirname: '{{ libremesh_community }}_{{ libremesh_community_variables_file }}'
+
+openwrt_firmware_selector_template_dir: '{{ openwrt_firmware_selector_dir }}/{{ openwrt_firmware_selector_template_dirname }}'
+
+# define docker container name used in docker-compose.yml
+openwrt_firmware_selector_container_name: "{{ libremesh_community }}_{{libremesh_community_variables_file}}_firmware_images"
+
+
+
+
+
+
+
+libremesh_community_firmwares_webserver_port: '8085'

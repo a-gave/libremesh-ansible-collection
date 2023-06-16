@@ -5,17 +5,23 @@ version_dist: LibreMesh
 # OpenWrt ImageBuilder Paths
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
-openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
+openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}
 
-openwrt_imagebuilder_download_dir: "{{ openwrt_dir }}/openwrt_imagebuilder"
-openwrt_imagebuilder_bin_dirname: "images/{{ community_vars_file_path }}/targets/{{ openwrt_target }}_{{ openwrt_subtarget }}"
+openwrt_imagebuilder_dirname: "libremesh_{{ version_number }}/openwrt_imagebuilder"
+openwrt_imagebuilder_download_dir: "{{ openwrt_dir }}/{{ openwrt_imagebuilder_dirname }}"
+openwrt_imagebuilder_bin_dirname: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/targets/{{ openwrt_target }}/{{ openwrt_subtarget }}"
 openwrt_imagebuilder_bin_dir: "{{ openwrt_imagebuilder_path }}/{{ openwrt_imagebuilder_bin_dirname }}"
 
-openwrt_imagebuilder_lime_mac_bin_dirname: "images/{{ community_vars_file_path }}/lime-mac/{{item_lime_mac.lime_mac}}"
+openwrt_imagebuilder_lime_mac_bin_dirname: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/lime-mac/{{item_lime_mac.lime_mac}}"
 openwrt_imagebuilder_lime_mac_bin_dir: "{{ openwrt_imagebuilder_path }}/{{ openwrt_imagebuilder_lime_mac_bin_dirname }}"
 
 # OpenWrt SDK
 libremesh_local_packages: []
+
+openwrt_sdk_dirname: libremesh_{{ version_number }}/openwrt_sdk
+openwrt_sdk_download_dir: "{{ openwrt_dir }}/{{ openwrt_sdk_dirname }}"
+openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker/"
+
 
 # Skip Options
 skip_build_lime_mac: false

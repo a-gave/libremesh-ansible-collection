@@ -2,13 +2,16 @@
 - name: Check if local packages are already compiled
   ansible.builtin.stat:
     path: "{{ openwrt_sdk_docker_workdir }}/bin/packages/x86_64/profiles/Packages.gz"
-  register: local_packages_are_compiled
+  register: local_packages_are_compiled 
     
+- debug:
+    var: local_packages_are_compiled
+
 - name: Compile local packages with OpenWrt SDK docker (increase time of build)
   ansible.builtin.include_role: 
     name: openwrt_sdk_docker
   when: (local_packages_are_compiled.stat.exists == true and force_openwrt_sdk_rebuild_local_packages )
-    or (local_packages_are_compiled is not defined)
+    or (local_packages_are_compiled.stat.exists == false)
 
 - name: Register fact openwrt_sdk_path
   ansible.builtin.set_fact:

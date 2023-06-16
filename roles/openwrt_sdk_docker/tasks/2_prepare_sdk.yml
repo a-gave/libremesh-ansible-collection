@@ -1,0 +1,19 @@
+---
+# Special needs for 19.07.10
+# - the docker image with the name of openwrt tag is not available for this version: use the name of openwrt branch instead 
+
+- name: Set defaults 19.07.10
+  ansible.builtin.set_fact: 
+    openwrt_sdk_docker_container_workdir: /home/build/openwrt
+    # openwrt_sdk_docker_user: 'build'
+    openwrt_sdk_docker_image: openwrt/sdk:{{openwrt_target}}-{{openwrt_subtarget}}-{{openwrt_version}}
+  when: openwrt_version == '19.07.10'
+
+- name: Set defaults
+  ansible.builtin.set_fact: 
+    openwrt_sdk_docker_container_workdir: /builder
+    # openwrt_sdk_docker_user: 'build'
+    openwrt_sdk_docker_image: openwrt/sdk:{{openwrt_target}}-{{openwrt_subtarget}}-v{{openwrt_version}}
+  when: openwrt_version != '19.07.10'
+
+

@@ -23,7 +23,7 @@
       openwrt_device_packages_list: {{ openwrt_device_full_packages_list | default('') }}
       openwrt_device_configs_list: {{ openwrt_device_configs_list | default('') }}
       --------------
-    marker: "# DEVICE {{openwrt_target}}_{{ openwrt_subtarget }}_{{ openwrt_device.name }} {mark} ANSIBLE MANAGED BLOCK"
+    marker: "# DEVICE {{ openwrt_device.name }} {mark} ANSIBLE MANAGED BLOCK"
   delegate_to: localhost
 
 - name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
@@ -31,9 +31,18 @@
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "make image PROFILE='{{ openwrt_device.name }}'
       PACKAGES='{{ openwrt_device_full_packages_list }}'
-      BIN_DIR='/images/targets/{{ openwrt_target }}_{{ openwrt_subtarget }}' 
+      BIN_DIR='/images/{{ openwrt_imagebuilder_docker_container_bin_dir }}' 
       FILES='/files/'
       EXTRA_IMAGE_NAME='{{ extra_image_name | default('') }}'"
+
+# openwrt 19.07.10
+- name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "mkdir /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}/{{ openwrt_device.name }};
+      mv /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}/profiles.json /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}/{{ openwrt_device.name }};"
+  when: openwrt_version == '19.07.10'
+  ignore_errors: true
 
 - name: 4.3 - Build LibreMesh {{ openwrt_device.name }} lime-mac
   include_tasks: 4.3_loop_lime_mac.yml

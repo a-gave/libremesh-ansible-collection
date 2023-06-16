@@ -1,18 +1,19 @@
 # defaults file for libremesh.libremesh.openwrt_imagebuilder_docker
 
 version_dist: LibreMesh
-version_number: "{{ libremesh_version }}"
+version_number: "{{ version_number | default(libremesh_version) }}"
 extra_image_name: ''
 
 # OpenWrt ImageBuilder docker paths
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
+openwrt_imagebuilder_docker_dirname: libremesh_{{ version_number }}/openwrt_imagebuilder_docker_{{ openwrt_version }}
 
 # output dir for images
-openwrt_imagebuilder_docker_container_bin_dir: "targets/{{ openwrt_target }}_{{ openwrt_subtarget }}"
+openwrt_imagebuilder_docker_container_bin_dir: "targets/{{ openwrt_target }}/{{ openwrt_subtarget }}"
 
-openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/openwrt_imagebuilder_{{ openwrt_version }}"
+openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_imagebuilder_docker_dirname }}"
 openwrt_imagebuilder_docker_files_dir: "{{ openwrt_imagebuilder_docker_workdir }}/files"
 openwrt_imagebuilder_docker_bin_dirname: "images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
 openwrt_imagebuilder_docker_bin_dir: "{{ openwrt_imagebuilder_docker_workdir }}/{{ openwrt_imagebuilder_docker_bin_dirname }}"
@@ -26,6 +27,13 @@ openwrt_imagebuilder_docker_user: buildbot
 libremesh_local_packages: []
 openwrt_sdk_local_packages_dir: "{{ openwrt_sdk_path }}/bin/packages/$(ls {{ openwrt_sdk_path }}/bin/packages/)/profiles"
 openwrt_imagebuilder_use_openwrt_sdk_non_docker: false
+
+openwrt_sdk_dirname: libremesh_{{ version_number }}/openwrt_sdk
+openwrt_sdk_download_dir: "{{ openwrt_dir }}/{{ openwrt_sdk_dirname }}"
+openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker_{{ openwrt_version }}"
+
+
+
 
 # Force Options
 force_openwrt_sdk_rebuild_local_packages: false

@@ -2,10 +2,18 @@
 - name: Set build only supported
   ansible.builtin.set_fact:
     openwrt_devices: "{{ libremesh_supported_devices | default('all') }}"
-  when: build_libremesh_supported_devices
+  when: build_libremesh_supported_devices 
+
+- name: Set build only supported
+  ansible.builtin.set_fact:
+    openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
+  when: not build_libremesh_supported_devices 
 
 - debug: 
     var: libremesh_supported_devices
+
+- debug: 
+    var: libremesh_devices
 
 - name: Printable list
   ansible.builtin.include_tasks: 1.4_printable_list.yml

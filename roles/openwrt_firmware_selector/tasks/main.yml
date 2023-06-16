@@ -1,0 +1,35 @@
+---
+- name: build - Include variables and print debug
+  ansible.builtin.include_role:
+    name: build
+
+- name: 1 - Ensure openwrt_firmware_selector_dir exists
+  ansible.builtin.file:
+    path: "{{ openwrt_firmware_selector_template_dir }}"
+    state: dir
+
+- name: 2 - Clone project
+  git:
+    repo: "{{ openwrt_firmware_selector_repository }}"
+    dest: "{{ openwrt_firmware_selector_template_dir }}/"
+    single_branch: yes
+    version: "{{ openwrt_firmware_selector_version }}"
+    update: no
+
+- name: 3 - Create template folder
+  blockinfile:
+    path: "{{ openwrt_firmware_selector_template_dir }}/Caddyfile"
+    block: "{{ lookup('ansible.builtin.template', 'Caddyfile.j2') }}"
+    create: yes
+
+- name: 4 - Create template folder
+  blockinfile:
+    path: "{{ openwrt_firmware_selector_template_dir }}/docker-compose.yml"
+    block: "{{ lookup('ansible.builtin.template', 'docker-compose.yml.j2') }}"
+    create: yes
+
+- name: 4 - Create template folder
+  lineinfile:
+    path: "{{ openwrt_firmware_selector_template_dir }}/docker-compose.yml"
+    line: "{{ lookup('ansible.builtin.template', 'docker-compose_single_path.j2') }}"
+    create: yes

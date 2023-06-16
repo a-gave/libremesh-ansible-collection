@@ -39,6 +39,8 @@ openwrt_devices_list: []
 
 libremesh_target_subtarget_packages: []
 
+build_libremesh_supported_devices: false
+
 
 # skip options
 
@@ -64,8 +66,7 @@ libremesh_build_mode: stable
 
 libremesh_version: "{{ libremesh_release['stable'] }}"
 
-
-# LibreMesh Releases
+# LibreMesh releases
 libremesh_release:
   stable: 2023.1 # Unreleased, compatible with openwrt 22
   old_stable: 2020.3 # Released 2023, compatible with openwrt 19 and lower

@@ -1,15 +1,49 @@
 ---
+- name: 4.1 - Apply device specific configs
+  ansible.builtin.include_tasks: 4.1_configure_device.yml  
+  when: openwrt_device.configs is defined
+
+- name: 4.1 - Apply device specific packages
+  ansible.builtin.include_tasks: 4.1_configure_device_packages.yml  
+  when: openwrt_device.packages is defined
+
+- name: Register fact device_full_packages_list
+  ansible.builtin.set_fact:
+    openwrt_device_full_packages_list: "{{ libremesh_version_packages_list | default('') }} 
+        {{ libremesh_target_subtarget_packages_list | default('') }} 
+        {{ openwrt_device_packages_list_string | default('') }}
+        {{ libremesh_devices_packages_list | default('') }}
+        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
+
+- name: Print debug to file
+  blockinfile:
+    path: "{{ debug_logfile }}"
+    block: |
+      openwrt_device: {{ openwrt_device.name | default('') }}
+      openwrt_device_packages_list: {{ openwrt_device_full_packages_list | default('') }}
+      openwrt_device_configs_list: {{ openwrt_device_configs_list | default('') }}
+      --------------
+    marker: "# DEVICE {{ openwrt_device.name }} {mark} ANSIBLE MANAGED BLOCK"
+  delegate_to: localhost
+
+
 - name: 2.2.1 - Build LibreMesh
   ansible.builtin.shell: 
     cmd: "make image PROFILE='{{openwrt_device.name}}'
-      PACKAGES='{{ libremesh_version_packages_list | default('') }} 
-        {{ libremesh_target_subtarget_packages_list | default('') }} 
-        {{ libremesh_devices_packages_list | default('') }}' 
+      PACKAGES='{{ openwrt_device_full_packages_list }}'
       BIN_DIR='{{ openwrt_imagebuilder_bin_dir }}' 
       FILES='files/'"
   args:
     chdir: "{{ openwrt_imagebuilder_path }}"
-    
+
+# openwrt 19.07.10
+- name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
+  ansible.builtin.file: 
+    cmd: "mkdir {{ openwrt_imagebuilder_bin_dir }}/{{ openwrt_device.name }};
+      mv {{ openwrt_imagebuilder_bin_dir }}/profiles.json {{ openwrt_imagebuilder_bin_dir }}/{{ openwrt_device.name }}"
+  when: openwrt_version == '19.07.10'
+  ignore_errors: true
+
 - name: 2.2.2 - Build LibreMesh {{ openwrt_device.name }} lime-mac
   include_tasks: 2.2.2_loop_lime_mac.yml
   when: not skip_build_lime_mac and openwrt_device.lime_mac is defined

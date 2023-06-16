@@ -1,0 +1,5 @@
+{% if openwrt_device.configs %}
+{% for device_config in openwrt_device.configs %}
+# CONFIG_{{device_config}}=y
+{% endfor %}
+{% endif %}

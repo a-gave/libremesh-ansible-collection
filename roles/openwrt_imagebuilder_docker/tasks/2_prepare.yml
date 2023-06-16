@@ -1,12 +1,16 @@
 ---
+- name: 2.2 - Prepare 19.07.10
+  ansible.builtin.include_tasks: 2.2_prepare_19.07.10.yml
+  when: openwrt_version == '19.07.10'
+
+- name: 2.2 - Prepare normal
+  ansible.builtin.include_tasks: 2.2_prepare_docker.yml
+  when: openwrt_version != '19.07.10'
+
 - name: 2.1 - Print debug
   ansible.builtin.include_role:
     name: build
     tasks_from: 1_print_debug.yml
-
-- name: 2.2 - Prepare 19.07.10
-  ansible.builtin.include_tasks: 2.2_prepare_19.07.10.yml
-  when: openwrt_version == '19.07.10'
 
 - name: Start and configure docker container 
   ansible.builtin.include_tasks: 3_configure.yml

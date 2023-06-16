@@ -27,9 +27,9 @@ libremesh_feeds: |
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{openwrt_build_user}}/openwrt_build/{{ openwrt_build_mode }}
-openwrt_buildroot_dirname: "openwrt_buildroot_{{ openwrt_version }}"
+openwrt_buildroot_dirname: "libremesh_{{ version_number }}/openwrt_buildroot_{{ openwrt_version }}"
 openwrt_buildroot_dir: "{{ openwrt_dir }}/{{ openwrt_buildroot_dirname }}"
-openwrt_bin_dir: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/targets/{{openwrt_target}}_{{openwrt_subtarget}}"
+openwrt_bin_dir: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/targets/{{openwrt_target}}/{{openwrt_subtarget}}"
 openwrt_buildroot_bin_dir: "{{ openwrt_buildroot_dir }}/{{ openwrt_bin_dir }}"
 
 
@@ -48,14 +48,17 @@ openwrt_task_6_build_openwrt: "{{ this_role_path }}/tasks/6_build_libremesh.yml"
 # openwrt_task_7_post_build: "{{ this_role_path }}/tasks/7_webserver.yml"
 
 
-# Libremesh config
+# <openwrt_buildroot>/config/Config-images.in
 openwrt_config_image: |
   CONFIG_IMAGEOPT=y
   CONFIG_VERSIONOPT=y
   CONFIG_VERSION_DIST="{{ version_dist }}"
   CONFIG_VERSION_NUMBER="{{ version_number }}"
+  CONFIG_JSON_OVERVIEW_IMAGE_INFO=y
   CONFIG_KERNEL_BUILD_DOMAIN="buildhost"
   CONFIG_KERNEL_BUILD_USER="builder"
 
 # openwrt_default_target_config_file: libremesh_default_target_config.j2
 openwrt_default_config_file: libremesh_default_config.j2
+
+openwrt_device_config_file: libremesh_default_config.j2

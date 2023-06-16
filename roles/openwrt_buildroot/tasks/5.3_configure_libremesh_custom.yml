@@ -4,6 +4,11 @@
     path: "{{ openwrt_buildroot_dir }}/.config"
     block: "{{ lookup('ansible.builtin.template', openwrt_default_config_file) }}"
 
+# - name: 
+#   blockinfile:
+#     path: "{{ openwrt_buildroot_dir }}/.config"
+#     block: "{{ lookup('ansible.builtin.template', openwrt_device_config_file) }}"
+
 - name: 5.3.2 - configure - Expand to full config via make defconfig
   shell: "cd {{ openwrt_buildroot_dir }}; make defconfig"
 
