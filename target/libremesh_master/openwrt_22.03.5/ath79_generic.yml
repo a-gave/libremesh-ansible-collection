@@ -6,11 +6,15 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - tplink_cpe510-v1
-  - tplink_cpe510-v3
+  - name: tplink_cpe510-v1
+    # communities: valsamoggia.ninux.org
+
+  - name: tplink_cpe510-v3
+    # communities: valsamoggia.ninux.org
+    
   # - ubnt_nanostation-m-xw to verify
+
   # - ubnt_nanostation-loco-m-xw to verify
-  - xiaomi_mi-router-4a-gigabit
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

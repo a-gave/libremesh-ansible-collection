@@ -1,5 +1,6 @@
 # This file contain generic configuration to build Libremesh on top of openwrt 22.03.5
 
+version_number: master
 # Define a libremesh specific commit/branch/tag
 libremesh_version_tag: master
 

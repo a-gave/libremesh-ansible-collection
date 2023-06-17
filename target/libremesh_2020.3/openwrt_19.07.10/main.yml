@@ -1,5 +1,5 @@
 # This file contain generic configuration to build Libremesh on top of openwrt 19.07.10
-
+version_number: '2020.3-ow19'
 # Define a libremesh specific commit/branch/tag
 # Default value is libremesh_version_tag: {{ libremesh_version }}
 # libremesh_version_tag:

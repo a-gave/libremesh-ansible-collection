@@ -1,33 +1,37 @@
 ---
-- name: 2.1 - [Warn] Stop and remove all existing openwrt-imagebuilder-docker containers and their's volumes
+- name: "[Warn] Stop and remove all existing openwrt-imagebuilder-docker containers and their's volumes"
   ansible.builtin.shell:
     cmd: docker ps -a | grep "openwrt\/imagebuilder" &> /dev/null &&
       docker stop $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') &&
       docker rm -vf $(docker ps -a | grep "openwrt\/imagebuilder" | awk '{print $1}') 
   ignore_errors: true
 
-- name: 2.2 - Ensure output dir for images exists
+- name: Ensure output dir for images exists
   file:
-    path: "{{ openwrt_imagebuilder_docker_bin_dirname }}"
+    path: "{{ openwrt_imagebuilder_docker_bin_dir }}"
     state: directory
 
-- name: 2.3 - Ensure additional files path exists
+- name: Ensure additional files path exists
   file:
     path: "{{ openwrt_imagebuilder_docker_files_dir }}"
     state: directory
+
+- name: Pull docker image
+  ansible.builtin.shell: 
+    cmd: docker pull {{ openwrt_imagebuilder_docker_image }}
 
 - name: Start docker container {{ openwrt_imagebuilder_docker_container }}
   ansible.builtin.shell: 
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
-      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/" {{ openwrt_imagebuilder_docker_image }}
+      -v "{{ openwrt_imagebuilder_docker_bin_dir }}:/images/" {{ openwrt_imagebuilder_docker_image }}
   when: libremesh_local_packages == []
 
 ## local packages
 - name: Start docker container {{ openwrt_imagebuilder_docker_container }} with local packages
   ansible.builtin.shell: 
     cmd: docker run --name {{ openwrt_imagebuilder_docker_container }} -it -d  
-      -v "{{ openwrt_imagebuilder_docker_bin_dirname }}:/images/"
+      -v "{{ openwrt_imagebuilder_docker_bin_dir }}:/images/"
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
       -v "{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles/:/local_packages/profiles/" {{ openwrt_imagebuilder_docker_image }}
   when: libremesh_local_packages != []
@@ -47,13 +51,32 @@
   when: libremesh_local_packages == []
 
 ## local packages
-- name: Add Libremesh Feeds of local_packages in repositories.conf and add local key
+- name: register
+  ansible.builtin.shell:
+    cmd: "cat {{ openwrt_sdk_path }}/key-build.pub.id"
+  register: local_packages_key_id
+  when: libremesh_local_packages != []
+
+- name: register
+  ansible.builtin.shell:
+    cmd: "tail -1 {{ openwrt_sdk_path }}/key-build.pub"
+  register: local_packages_key_pub
+  when: libremesh_local_packages != []
+
+- name: register fact local_packages key
+  ansible.builtin.set_fact: 
+    local_packages_key_id: "{{ local_packages_key_id.stdout }}"
+    local_packages_key_pub: "{{ local_packages_key_pub.stdout }}"
+  when: libremesh_local_packages != []
+
+- name: Add feeds of local_packages in repositories.conf and add local key
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "echo 'src/gz local_packages file:/local_packages/profiles' >> repositories.conf
-      && echo 'untrusted comment signed by local_key $(cat {{ openwrt_sdk_path }}/key-build.pub.id)' > keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id) 
-      && echo '$(tail -1 {{ openwrt_sdk_path }}/key-build.pub)' >> keys/$(cat {{ openwrt_sdk_path }}/key-build.pub.id)"
+      && echo 'untrusted comment signed by local_key {{ local_packages_key_id }}' > keys/{{ local_packages_key_id }} 
+      && echo '{{ local_packages_key_pub }}' >> keys/{{ local_packages_key_id }}"
   when: libremesh_local_packages != []
+  ignore_errors: true
 
 - name: Append VERSION_DIST and VERSION_NUMBER to .config
   ansible.builtin.shell: 
@@ -61,14 +84,17 @@
       "echo 'CONFIG_VERSION_DIST={{ version_dist }}' >> .config
       && echo 'CONFIG_VERSION_NUMBER={{ version_number }}' >> .config"
 
-- name: Build Libremesh
-  ansible.builtin.include_tasks: 3.1_build_libremesh_devices.yml
-  loop: "{{ openwrt_devices | default([]) }}"
-  loop_control:
-    loop_var: openwrt_device
+- name: Ensure output dir exists
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "mkdir -p /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"
 
-- name: Stop and Remove docker container {{ openwrt_imagebuilder_docker_container }} and it's volumes
-  ansible.builtin.shell:
-    cmd: docker stop {{ openwrt_imagebuilder_docker_container }}; 
-      docker rm -vf {{ openwrt_imagebuilder_docker_container }}
-  ignore_errors: true
+- name: Adjust permissions
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_imagebuilder_docker_container }} sh -c 
+      "chown -R {{ openwrt_imagebuilder_docker_user }}:{{ openwrt_imagebuilder_docker_user}} /files/ /images/
+      {% if (libremesh_local_packages != []) %} /local_packages/ {% endif %}"
+
+- name: Debug output dir
+  debug:
+    msg: "/images/{{ openwrt_imagebuilder_docker_container_bin_dir }}"

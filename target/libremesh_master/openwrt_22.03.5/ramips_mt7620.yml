@@ -9,6 +9,7 @@ libremesh_supported_devices:
   - name: asus_rt-ac51u
     configs: 
       - DRIVER_11AC_SUPPORT
+    # communities: valsamoggia.ninux.org
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

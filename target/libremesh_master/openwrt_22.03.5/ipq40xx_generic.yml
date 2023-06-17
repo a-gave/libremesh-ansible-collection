@@ -10,7 +10,8 @@ libremesh_target_subtarget_packages:
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - plasmacloud_pa1200 # communities: calafou
+  - name: plasmacloud_pa1200 
+    # communities: calafou
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

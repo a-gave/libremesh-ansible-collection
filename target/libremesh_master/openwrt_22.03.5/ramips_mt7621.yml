@@ -9,7 +9,8 @@ libremesh_target_subtarget_packages:
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - xiaomi_mi-router-4a-gigabit # communities: calafou
+  - name: xiaomi_mi-router-4a-gigabit 
+    # communities: calafou
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

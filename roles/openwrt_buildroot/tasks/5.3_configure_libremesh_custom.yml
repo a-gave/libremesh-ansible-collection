@@ -1,11 +1,16 @@
 ---
 - name: 5.3.1 - configure - Apply custom configs
   blockinfile:
-    path: "{{ openwrt_build_dir }}/.config"
+    path: "{{ openwrt_buildroot_dir }}/.config"
     block: "{{ lookup('ansible.builtin.template', openwrt_default_config_file) }}"
 
-- name: 5.3.2 - configure - Expand to full config via make defconfig
-  shell: "cd {{ openwrt_build_dir }}; make defconfig"
+# - name: 
+#   blockinfile:
+#     path: "{{ openwrt_buildroot_dir }}/.config"
+#     block: "{{ lookup('ansible.builtin.template', openwrt_device_config_file) }}"
 
-- name: 5.3.3 - configure - Diffconfig to configs/{{ version_dist }}_custom_config_{{openwrt_target}}_{{ openwrt_subtarget}}_{{libremesh_community}}_{{libremesh_community_variables_file}}
-  shell: "cd {{ openwrt_build_dir }}; ./scripts/diffconfig.sh > configs/{{ version_dist }}_custom_config_{{openwrt_target}}_{{openwrt_subtarget}}_{{libremesh_community}}_{{libremesh_community_variables_file}}"
+- name: 5.3.2 - configure - Expand to full config via make defconfig
+  shell: "cd {{ openwrt_buildroot_dir }}; make defconfig"
+
+- name: 5.3.3 - configure - Diffconfig to configs/{{ version_dist }}_{{openwrt_target}}_{{ openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_variables_file}}
+  shell: "cd {{ openwrt_buildroot_dir }}; ./scripts/diffconfig.sh > configs/{{ version_dist }}_{{openwrt_target}}_{{openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_variables_file}}"

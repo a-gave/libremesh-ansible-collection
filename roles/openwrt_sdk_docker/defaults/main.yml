@@ -9,13 +9,13 @@ make_nproc: "-j$(nproc)"
 openwrt_build_mode: "stable"
 openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}/
-openwrt_build_dirname: "libremesh_{{ libremesh_version }}"
-openwrt_build_dir: "{{ openwrt_dir }}/{{ openwrt_build_dirname }}"
+openwrt_sdk_docker_dirname: libremesh_{{ version_number }}/openwrt_sdk_docker_{{ openwrt_version }}
 
-openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/openwrt_sdk_docker/"
-openwrt_sdk_docker_local_packages_sources_mountdir: "{{ openwrt_sdk_docker_workdir }}/local_packages_sources/"
+openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_sdk_docker_dirname }}"
+openwrt_sdk_docker_bin_dir: "{{ openwrt_sdk_docker_workdir }}/bin/"
+openwrt_sdk_docker_local_packages_sources_mountdir: "{{ openwrt_sdk_docker_workdir }}/local_packages"
 openwrt_sdk_docker_local_packages_sources_dir: /local_packages/
-openwrt_sdk_docker_local_packages_overwrite_dir: /builder/feeds/profiles/{{ libremesh_community }}/
+openwrt_sdk_docker_local_packages_overwrite_dir: "{{ openwrt_sdk_docker_container_workdir }}/feeds/profiles/{{ libremesh_community }}"
 
 openwrt_sdk_docker_image: openwrt/sdk:{{openwrt_target}}-{{openwrt_subtarget}}-v{{openwrt_version}}
 openwrt_sdk_docker_container: openwrt_sdk_{{openwrt_target}}-{{openwrt_subtarget}}_v{{openwrt_version}}
@@ -27,3 +27,7 @@ libremesh_feeds: |
 
 # Skip options
 skip_openwrt_sdk_install_requirements: false
+
+openwrt_sdk_docker_container_user: "buildbot"
+openwrt_sdk_docker_container_workdir: /builder
+openwrt_sdk_docker_container_bin_dir: "{{ openwrt_sdk_docker_container_workdir }}/bin/"

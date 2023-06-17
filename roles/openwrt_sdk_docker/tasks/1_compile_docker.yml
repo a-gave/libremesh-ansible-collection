@@ -12,11 +12,18 @@
   ignore_errors: true
   args:
     chdir: "{{ openwrt_sdk_docker_workdir }}"
-    
+
+- name: include prepare   
+  ansible.builtin.include_tasks: 2_prepare_sdk.yml
+
+- name: Pull docker image
+  ansible.builtin.shell: 
+    cmd: docker pull {{ openwrt_sdk_docker_image }}
+
 - name: 1.2 - Start docker container {{ openwrt_sdk_docker_container }}
   ansible.builtin.shell: 
     cmd: docker run --name {{openwrt_sdk_docker_container}} -it -d 
-      -v "{{ openwrt_sdk_docker_workdir }}/bin/:/builder/bin/"
+      -v "{{ openwrt_sdk_docker_bin_dir }}:{{ openwrt_sdk_docker_container_bin_dir }}"
       -v "{{ openwrt_sdk_docker_local_packages_sources_mountdir }}:{{ openwrt_sdk_docker_local_packages_sources_dir }}" {{ openwrt_sdk_docker_image }}
 
 - name: 1.3 - Generate signin key and output public key to file
@@ -27,7 +34,13 @@
 
 - name: 1.4 - Copy public key id
   ansible.builtin.shell: 
-    cmd: docker cp {{ openwrt_sdk_docker_container }}:/builder/key-build.pub.id .
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:{{ openwrt_sdk_docker_container_workdir }}/key-build.pub.id .
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: 1.4 - Copy public key
+  ansible.builtin.shell: 
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:{{ openwrt_sdk_docker_container_workdir }}/key-build.pub .
   args:
     chdir: "{{ openwrt_sdk_docker_workdir }}"
 
@@ -50,7 +63,7 @@
   ansible.builtin.shell: 
     cmd: docker exec -u root {{ openwrt_sdk_docker_container }} sh -c 
       "cp -r /local_packages/* {{ openwrt_sdk_docker_local_packages_overwrite_dir }}
-      && chown -R buildbot:buildbot /builder/bin/"
+      && chown -R {{ openwrt_sdk_docker_user }}:{{ openwrt_sdk_docker_user }} {{ openwrt_sdk_docker_container_bin_dir }}"
 
 - name: 1.9 - Update and install feeds - install local_packages
   ansible.builtin.shell: 

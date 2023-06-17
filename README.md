@@ -1,8 +1,4 @@
-# Ansible Collection - libremesh.libremesh
+# libremesh.libremesh
+Ansible collection for Libremesh
 
-
-Requirements
-------------
-Install requirements
-
-	ansible-galaxy install -r requirements.yml
+Documentation: https://gitlab.com/a-gave/libremesh-ansible-playbooks/

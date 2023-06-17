@@ -1,13 +1,28 @@
 ---
+- name: 2.2 - Prepare 19.07.10
+  ansible.builtin.include_tasks: 2.2_prepare_19.07.10.yml
+  when: openwrt_version == '19.07.10'
+
+- name: 2.2 - Prepare normal
+  ansible.builtin.include_tasks: 2.2_prepare_docker.yml
+  when: openwrt_version != '19.07.10'
+
 - name: 2.1 - Print debug
   ansible.builtin.include_role:
     name: build
     tasks_from: 1_print_debug.yml
 
-- name: 2.2 - Prepare 19.07.10
-  ansible.builtin.include_tasks: 2.2_prepare_19.07.10.yml
-  when: openwrt_version == '19.07.10'
+- name: Start and configure docker container 
+  ansible.builtin.include_tasks: 3_configure.yml
 
-- name: 2.2 - Build
-  ansible.builtin.include_tasks: 3_build.yml
+- name: Build libremesh_devices
+  ansible.builtin.include_tasks: 4_build_libremesh_devices.yml
+  loop: "{{ openwrt_devices | default([]) }}"
+  loop_control:
+    loop_var: openwrt_device
 
+- name: Stop and Remove docker container {{ openwrt_imagebuilder_docker_container }} and it's volumes
+  ansible.builtin.shell:
+    cmd: docker stop {{ openwrt_imagebuilder_docker_container }}; 
+      docker rm -vf {{ openwrt_imagebuilder_docker_container }}
+  ignore_errors: true

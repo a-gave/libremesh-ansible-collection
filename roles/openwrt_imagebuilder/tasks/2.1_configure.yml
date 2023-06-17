@@ -39,25 +39,29 @@
   ansible.builtin.shell:
     cmd: "cat {{ openwrt_sdk_path }}/key-build.pub.id"
   register: local_packages_pub_key_id
+  when: libremesh_local_packages != []
 
 - name: Register local_packages public key
   ansible.builtin.set_fact:
     local_packages_pub_key: "{{ local_packages_pub_key_id.stdout }}"
+  when: libremesh_local_packages != []
 
 - name: Ensure local_packages public key file exist
   ansible.builtin.file:
     path: "{{ openwrt_imagebuilder_path }}/keys/{{ local_packages_pub_key }}"
     state: touch
+  when: libremesh_local_packages != []
 
 - name: Add local_packages public key
   ansible.builtin.copy:
     src: "{{ openwrt_sdk_path }}/key-build.pub"
     dest: "{{ openwrt_imagebuilder_path }}/keys/{{ local_packages_pub_key }}"
     remote_src: true
+  when: libremesh_local_packages != []
 
 - name: Append VERSION_DIST and VERSION_NUMBER to .config
   ansible.builtin.blockinfile:
     path: "{{ openwrt_imagebuilder_path }}/.config"
     block: |
       CONFIG_VERSION_DIST={{ version_dist }}
-      CONFIG_VERSION_NUMBER={{ libremesh_version }}
+      CONFIG_VERSION_NUMBER={{ version_number }}

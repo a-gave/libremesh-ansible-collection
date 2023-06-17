@@ -6,7 +6,8 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - tplink_tl-mr6400-v4
-
+  - name: tplink_tl-mr6400-v4
+    # communities: valsamoggia.ninux.org
+  
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:

@@ -1,0 +1,9 @@
+# This file contain generic configuration to build Libremesh on top of openwrt 22.03.5
+version_number: '2020.3-ow21'
+# Define a libremesh specific commit/branch/tag
+#libremesh_version_tag: master
+
+libremesh_version_packages:
+  - -dnsmasq
+  - -odhcpd-ipv6only
+  - -ppp

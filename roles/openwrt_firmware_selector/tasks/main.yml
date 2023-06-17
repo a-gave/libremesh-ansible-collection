@@ -1,0 +1,9 @@
+---
+- name: requirements
+  ansible.builtin.include_tasks: 0_requirements.yml
+
+- name: template
+  ansible.builtin.include_tasks: 1_template.yml
+
+- name: update
+  ansible.builtin.include_tasks: 2_update.yml

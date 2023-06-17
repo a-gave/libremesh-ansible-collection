@@ -3,6 +3,7 @@
   ansible.builtin.include_vars:
     file: "{{libremesh_version_vars}}"
   when: libremesh_version is defined
+  ignore_errors: true
 
 - name: 0.2 - Include Libremesh Target variables if any
   ansible.builtin.include_vars:
@@ -14,13 +15,19 @@
   ansible.builtin.include_vars:
     file: "{{libremesh_community_vars}}"
   when: libremesh_community is defined
+  ignore_errors: true
 
 - name: 0.4 - Include Community variables file
   ansible.builtin.include_vars:
     file: "{{libremesh_community_file_vars}}"
   when: libremesh_community is defined and libremesh_community_variables_file is defined
+  ignore_errors: true
 
-- name: 0.5 - Include Hostvars
-  ansible.builtin.include_vars:
-    file: "{{ playbook_dir }}/host_vars/{{ inventory_hostname }}.yml"
+- block:
+    - name: Set fact
+      ansible.builtin.set_fact: 
+        hostvars_file: "{{ playbook_dir }}/host_vars/{{ inventory_hostname }}.yml"
+    - name: Include Hostvars
+      ansible.builtin.include_vars:
+        file: "{{ hostvars_file }}"
   ignore_errors: true

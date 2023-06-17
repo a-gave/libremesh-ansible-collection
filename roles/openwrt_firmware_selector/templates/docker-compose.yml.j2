@@ -1,0 +1,9 @@
+version: '3'
+services:
+  caddy:
+    image: caddy:latest
+    container_name: "{{ libremesh_community }}_{{libremesh_community_variables_file}}_firmwares"
+    ports:
+      - "{{ libremesh_community_firmwares_webserver_port }}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile

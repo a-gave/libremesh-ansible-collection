@@ -1,0 +1,12 @@
+---
+- name: Append device specific configs to .config
+  ansible.builtin.blockinfile: 
+    path: "{{ openwrt_imagebuilder_path }}/.config"
+    block: "{{ lookup('ansible.builtin.template', 'device_config.j2') }}"
+
+- name: Define list of device specific configs
+  ansible.builtin.set_fact: 
+    openwrt_device_configs_list: "{{ openwrt_device_configs_list | default([]) | union([device_config]) }}"
+  loop: "{{ openwrt_device.configs }}"
+  loop_control:
+    loop_var: device_config

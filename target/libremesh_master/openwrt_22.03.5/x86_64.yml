@@ -6,7 +6,7 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices:
-  - generic
+  - name: generic
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:
