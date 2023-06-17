@@ -65,8 +65,8 @@
 
 - name: register fact local_packages key
   ansible.builtin.set_fact: 
-    local_packages_key_id: local_packages_key_id.stdout
-    local_packages_key_pub: local_packages_key_pub.stdout
+    local_packages_key_id: "{{ local_packages_key_id.stdout }}"
+    local_packages_key_pub: "{{ local_packages_key_pub.stdout }}"
   when: libremesh_local_packages != []
 
 - name: Add feeds of local_packages in repositories.conf and add local key
