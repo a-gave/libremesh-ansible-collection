@@ -8,3 +8,4 @@
   ansible.builtin.set_fact: 
     openwrt_imagebuilder_docker_user: 'build'
     openwrt_imagebuilder_docker_image: openwrt/imagebuilder:{{openwrt_target}}-{{openwrt_subtarget}}-{{openwrt_version}}
+    openwrt_imagebuilder_docker_container_workdir: /home/build/openwrt

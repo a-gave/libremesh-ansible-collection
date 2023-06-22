@@ -101,7 +101,7 @@
   register: openwrt_imagebuilder_docker_debug
 
 
-- name: 1.5.8 - Debug OpenWrt Buildroot docker paths
+- name: 1.5.8 - Debug OpenWrt Buildroot paths
   ansible.builtin.debug:
     msg:
       - "--------------"
