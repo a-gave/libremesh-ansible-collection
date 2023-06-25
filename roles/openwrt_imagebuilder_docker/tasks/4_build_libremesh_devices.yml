@@ -12,7 +12,7 @@
       EXTRA_IMAGE_NAME='{{ extra_image_name | default('') }}'"
 
 # openwrt 19.07.10
-- name: 4.3 - workaround to generate devices profiles.json with old openwrt imagebuilder
+- name: 4.3 - workaround to generate device's profiles.json with old openwrt imagebuilder
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "mkdir /images/{{ openwrt_imagebuilder_docker_container_bin_dir }}/{{ openwrt_device.name }};

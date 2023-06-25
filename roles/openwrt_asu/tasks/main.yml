@@ -1,0 +1,21 @@
+---
+- name: 0 - Requirements
+  include_tasks: 0_requirements.yml
+
+- name: 1 - Prepare
+  include_tasks: 1_prepare.yml
+
+
+
+# Fixes
+# https://github.com/containers/dnsname/blob/main/README_PODMAN.md
+# If your system uses AppArmor, it can prevent dnsmasq to open the necessary files. To fix this, add the following lines to /etc/apparmor.d/local/usr.sbin.dnsmasq:
+
+# # required by the dnsname plugin in podman
+# /run/containers/cni/dnsname/*/dnsmasq.conf r,
+# /run/containers/cni/dnsname/*/addnhosts r,
+# /run/containers/cni/dnsname/*/pidfile rw,
+
+# Then reload the main dnsmasq profile:
+
+# sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.dnsmasq

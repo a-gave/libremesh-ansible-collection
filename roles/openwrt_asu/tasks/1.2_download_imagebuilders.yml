@@ -1,0 +1,6 @@
+---
+
+- name: Download imagebuilder docker images
+  shell: podman exec -ti asu_podman_1 sh -c 
+    "podman pull ghcr.io/openwrt/imagebuilder:{{ openwrt_target }}-{{ openwrt_subtarget }}-v{{ openwrt_version }}"
+  

@@ -1,0 +1,11 @@
+---
+- name: Install openwrt_asu requirements
+  become: yes
+  become_user: root
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - podman
+      - python3-full
+      - dnsmasq

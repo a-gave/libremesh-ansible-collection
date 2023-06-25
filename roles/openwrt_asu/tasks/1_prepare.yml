@@ -1,0 +1,48 @@
+---
+
+- name: Clone openwrt_asu
+  git:
+    repo: "{{ openwrt_asu_repository }}"
+    dest: "{{ openwrt_asu_workdir }}"
+    single_branch: yes
+    version: "{{ openwrt_asu_version }}"
+    update: no
+
+- name: Prepare python virtualenv 
+  shell: /usr/bin/python3 -m venv {{ openwrt_asu_workdir }}/.venv
+
+- name: Install podman-compose
+  ansible.builtin.pip:
+    name: podman-compose
+    virtualenv: "{{ openwrt_asu_workdir }}/.venv"
+    virtualenv_command: /usr/bin/python3 -m venv
+
+- name: Initialize public dir 
+  file:
+    path: "{{ openwrt_asu_workdir }}/asu-service/public"
+    state: directory
+
+# uncomment vim misc/config.py ALLOW_DEFAULT=false
+
+# configure branches.yml
+
+- name: Configure openwrt_asu_server overwriting default
+  shell:
+    sed -i 's/\(127.0.0.1:8000\)\(.*\)/{{ openwrt_asu_expose_address }}\2/g' podman-compose.yml;
+  args:
+    chdir: "{{ openwrt_asu_workdir }}"
+
+- name: Start asu
+  shell: .venv/bin/podman-compose up -d
+  args:
+    chdir: "{{ openwrt_asu_workdir }}"
+
+- name: Loops build_targets
+  ansible.builtin.include_tasks: 1.2_download_imagebuilders.yml
+  vars:
+    openwrt_target: "{{ build_target.openwrt_target }}"
+    openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
+  loop: "{{ libremesh_devices }}"
+  loop_control:
+    loop_var: build_target
+

@@ -1,0 +1,26 @@
+
+# version of openwrt_asu
+openwrt_asu_version: 'main' # Unreleased
+# openwrt_asu_version: '0.7.20' # Thu Apr 20 2023
+
+# repository where to download openwrt_asu
+openwrt_asu_repository: 'https://github.com/openwrt/asu' 
+
+# openwrt_asu server container exposed host port
+openwrt_asu_server_host_port: '8000' 
+
+# openwrt_asu server container exposed host address
+openwrt_asu_server_host_address: '0.0.0.0' 
+
+# openwrt_asu server container expose host address
+openwrt_asu_expose_address: '{{ openwrt_asu_server_host_address }}:{{ openwrt_asu_server_host_port }}' 
+
+# use a different dir
+openwrt_build_mode: 'test'
+
+# main OpenWrt dir
+openwrt_dir: '/home/{{ openwrt_build_user }}/{{ openwrt_build_mode }}'
+
+# work directory for openwrt_asu
+openwrt_asu_workdir: '{{ openwrt_dir }}/openwrt_asu/asu'
+
