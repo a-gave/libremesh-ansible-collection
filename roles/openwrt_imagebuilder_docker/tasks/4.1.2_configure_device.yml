@@ -17,3 +17,10 @@
   loop: "{{ openwrt_device.configs }}"
   loop_control:
     loop_var: device_config
+
+- name: Define printable list of device specific configs
+  ansible.builtin.set_fact: 
+    openwrt_device_configs_list_string: "{{ openwrt_device_configs_list | join(' ') | default([])  }}"
+  loop: "{{ openwrt_device.packages }}"
+  loop_control:
+    loop_var: device_package

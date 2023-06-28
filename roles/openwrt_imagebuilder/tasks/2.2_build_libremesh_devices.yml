@@ -13,7 +13,7 @@
         {{ libremesh_target_subtarget_packages_list | default('') }} 
         {{ openwrt_device_packages_list_string | default('') }}
         {{ libremesh_devices_packages_list | default('') }}
-        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
+        {{ libremesh_community_recipe_target_subtarget_packages_list | default('') }}"
 
 - name: Print debug to file
   blockinfile:

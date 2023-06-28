@@ -17,7 +17,7 @@
         {{ libremesh_target_subtarget_packages_list | default('') }} 
         {{ openwrt_device_packages_list_string | default('') }}
         {{ libremesh_devices_packages_list | default('') }}
-        {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
+        {{ libremesh_community_recipe_target_subtarget_packages_list | default('') }}"
 
 - name: Print debug to file
   blockinfile:
@@ -25,7 +25,7 @@
     block: |
       openwrt_device: {{ openwrt_device.name | default('') }}
       openwrt_device_packages_list: {{ openwrt_device_full_packages_list | default('') }}
-      openwrt_device_configs_list: {{ openwrt_device_configs_list | default('') }}
+      openwrt_device_configs_list: {{ openwrt_device_configs_list_string | default('') }}
       --------------
     marker: "# DEVICE {{ openwrt_device.name }} {mark} ANSIBLE MANAGED BLOCK"
   delegate_to: localhost

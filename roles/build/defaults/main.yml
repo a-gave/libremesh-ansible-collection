@@ -18,7 +18,7 @@ libremesh_target_vars: "{{role_path}}/../../target/{{ libremesh_openwrt_versions
 libremesh_community_vars: "community/{{ libremesh_openwrt_versions_path }}/{{ libremesh_community }}/main.yml" 
 
 # community variables defined on selected file
-libremesh_community_file_vars: "community/{{ libremesh_openwrt_versions_path }}/{{community_vars_file_path }}.yml" 
+libremesh_community_recipe_vars: "community/{{ libremesh_openwrt_versions_path }}/{{community_vars_file_path }}.yml" 
 
 
 # DEBUG OPTIONS

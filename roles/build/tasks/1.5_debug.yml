@@ -27,8 +27,8 @@
       - "# selected depending on Community variables file specified"
       - "# optionally select new ones or overwrite VERSION PACKAGES"
       - "libremesh_devices_packages = {{ libremesh_devices_packages_list | default('') }}"
-      - "libremesh_community_file_target_subtarget_packages = {{ libremesh_community_file_target_subtarget_packages_list | default('') }}"
-#     - "libremesh_community_file_device_packages = {{ libremesh_community_file_device_packages | default('') }}"
+      - "libremesh_community_recipe_target_subtarget_packages = {{ libremesh_community_recipe_target_subtarget_packages_list | default('') }}"
+#     - "libremesh_community_recipe_device_packages = {{ libremesh_community_recipe_device_packages | default('') }}"
       - "--------------"
       - "# LOCAL PACKAGES"
       - "# Compiled with openwrt-sdk, or directly with buildroot"
@@ -43,7 +43,7 @@
       - "1 - {{ libremesh_version_vars | default('') }}"
       - "2 - {{ libremesh_target_vars | default('') }}"
       - "3 - {{ libremesh_community_vars | default('') }}"
-      - "4 - {{ libremesh_community_file_vars | default('') }}"
+      - "4 - {{ libremesh_community_recipe_vars | default('') }}"
       - "5 - {{ hostvars_file | default('') }}"
     
   register: build_debug
