@@ -9,7 +9,7 @@
       - "# BUILD {{ version_dist }}:"
       - "libremesh_version = {{ libremesh_version | default('') }}"
       - "libremesh_community = {{ libremesh_community | default('') }}"
-      - "libremesh_community_variables_file = {{ libremesh_community_variables_file | default('') }}"
+      - "libremesh_community_recipe = {{ libremesh_community_recipe | default('') }}"
       - "openwrt_version = {{ openwrt_version | default('') }}"
       - "openwrt_target = {{ openwrt_target | default('') }}"
       - "openwrt_subtarget = {{ openwrt_subtarget | default('') }}"

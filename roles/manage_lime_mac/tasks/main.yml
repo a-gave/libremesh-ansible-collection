@@ -28,7 +28,7 @@
   ansible.builtin.include_vars:
     file: "{{libremesh_community_devices_vars}}"
   vars:
-    libremesh_community_devices_vars: "community/libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}/{{libremesh_community}}/{{libremesh_community_variables_file}}.yml" 
+    libremesh_community_devices_vars: "community/libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}/{{libremesh_community}}/{{libremesh_community_recipe}}.yml" 
 
 - name: 0.6 - Filter target_subtarget
   ansible.builtin.include_tasks: 0_filter_device.yml

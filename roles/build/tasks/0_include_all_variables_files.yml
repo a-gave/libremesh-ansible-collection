@@ -20,7 +20,7 @@
 - name: 0.4 - Include Community variables file
   ansible.builtin.include_vars:
     file: "{{libremesh_community_file_vars}}"
-  when: libremesh_community is defined and libremesh_community_variables_file is defined
+  when: libremesh_community is defined and libremesh_community_recipe is defined
   ignore_errors: true
 
 - block:

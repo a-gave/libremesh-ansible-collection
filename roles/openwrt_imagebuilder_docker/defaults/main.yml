@@ -15,7 +15,7 @@ openwrt_imagebuilder_docker_container_bin_dir: "targets/{{ openwrt_target }}/{{ 
 
 openwrt_imagebuilder_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_imagebuilder_docker_dirname }}"
 openwrt_imagebuilder_docker_files_dir: "{{ openwrt_imagebuilder_docker_workdir }}/files"
-openwrt_imagebuilder_docker_bin_dirname: "images/{{libremesh_community}}/{{libremesh_community_variables_file}}/"
+openwrt_imagebuilder_docker_bin_dirname: "images/{{libremesh_community}}/{{libremesh_community_recipe}}/"
 openwrt_imagebuilder_docker_bin_dir: "{{ openwrt_imagebuilder_docker_workdir }}/{{ openwrt_imagebuilder_docker_bin_dirname }}"
 openwrt_imagebuilder_docker_config_dir: "{{ openwrt_imagebuilder_docker_workdir }}/configs"
 

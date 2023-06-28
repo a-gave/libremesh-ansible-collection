@@ -3,7 +3,7 @@
 # HELPERS
 libremesh_openwrt_versions_path: libremesh_{{libremesh_version}}/openwrt_{{openwrt_version}}
 openwrt_target_subtarget_path: "{{openwrt_target}}_{{openwrt_subtarget}}"
-community_vars_file_path: "{{ libremesh_community }}/{{ libremesh_community_variables_file }}"
+community_vars_file_path: "{{ libremesh_community }}/{{ libremesh_community_recipe }}"
 
 # VARIABLES PATHS
 # default paths from which to include variables
@@ -60,7 +60,7 @@ version_number: "{{ libremesh_version | default('')}}"
 
 libremesh_community: libremesh
 
-libremesh_community_variables_file: stable
+libremesh_community_recipe: stable
 
 libremesh_build_mode: stable
 

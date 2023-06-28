@@ -12,5 +12,5 @@
 - name: 5.3.2 - configure - Expand to full config via make defconfig
   shell: "cd {{ openwrt_buildroot_dir }}; make defconfig"
 
-- name: 5.3.3 - configure - Diffconfig to configs/{{ version_dist }}_{{openwrt_target}}_{{ openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_variables_file}}
-  shell: "cd {{ openwrt_buildroot_dir }}; ./scripts/diffconfig.sh > configs/{{ version_dist }}_{{openwrt_target}}_{{openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_variables_file}}"
+- name: 5.3.3 - configure - Diffconfig to configs/{{ version_dist }}_{{openwrt_target}}_{{ openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_recipe}}
+  shell: "cd {{ openwrt_buildroot_dir }}; ./scripts/diffconfig.sh > configs/{{ version_dist }}_{{openwrt_target}}_{{openwrt_subtarget}}_custom_config_{{libremesh_community}}_{{libremesh_community_recipe}}"

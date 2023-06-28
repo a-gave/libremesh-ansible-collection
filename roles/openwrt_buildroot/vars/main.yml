@@ -29,7 +29,7 @@ openwrt_build_user: "{{ ansible_user }}"
 openwrt_dir: /home/{{openwrt_build_user}}/openwrt_build/{{ openwrt_build_mode }}
 openwrt_buildroot_dirname: "libremesh_{{ version_number }}/openwrt_buildroot_{{ openwrt_version }}"
 openwrt_buildroot_dir: "{{ openwrt_dir }}/{{ openwrt_buildroot_dirname }}"
-openwrt_bin_dir: "images/{{ libremesh_community }}/{{ libremesh_community_variables_file }}/targets/{{openwrt_target}}/{{openwrt_subtarget}}"
+openwrt_bin_dir: "images/{{ libremesh_community }}/{{ libremesh_community_recipe }}/targets/{{openwrt_target}}/{{openwrt_subtarget}}"
 openwrt_buildroot_bin_dir: "{{ openwrt_buildroot_dir }}/{{ openwrt_bin_dir }}"
 
 
