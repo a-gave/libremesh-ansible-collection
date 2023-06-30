@@ -6,15 +6,26 @@ libremesh_target_subtarget_packages: []
 
 # Define here a list of supported devices
 libremesh_supported_devices:
+
+  - name: dlink_dir-842-c3
+    # communities: 
+    # - valsamoggia.ninux.org
+
+  - name: tplink_archer-d50-v1
+    # communities: 
+    # - valsamoggia.ninux.org
+    
   - name: tplink_cpe510-v1
-    # communities: valsamoggia.ninux.org
+    # communities: 
+    # - valsamoggia.ninux.org
 
   - name: tplink_cpe510-v3
-    # communities: valsamoggia.ninux.org
-    
-  # - ubnt_nanostation-m-xw to verify
+    # communities: 
+    #  - valsamoggia.ninux.org
 
-  # - ubnt_nanostation-loco-m-xw to verify
+# - name: ubnt_nanostation-m-xw to verify
+
+# - name: ubnt_nanostation-loco-m-xw to verify
 
 # Define here a list of supported devices configs
 libremesh_device_specific_configs:
