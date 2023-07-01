@@ -1,11 +1,17 @@
 ---
+
+# - name: execute
+#   shell:
+#     cmd: "lua {{ role_path }}/files/utils.lua {{ default_hostname }} {{ default_mac }}"
+#   register: ip_host
+
 - name: 0.1 - Assert mandatory variables are defined
   ansible.builtin.assert:
     that: 
       - libremesh_version is defined
       - openwrt_version is defined
       - libremesh_community is defined
-      - libremesh_community_vars_file is defined
+      - libremesh_community_recipe is defined
     msg: "Mandatory variables are undefined"
 
 - name: 0.2 - Ensure host_vars dir exist
@@ -33,10 +39,12 @@
 - name: 0.6 - Filter target_subtarget
   ansible.builtin.include_tasks: 0_filter_device.yml
   vars:
-    devices: "{{ libremesh_target_subtarget.openwrt_devices }}"
+    devices: "{{ build_target.openwrt_devices }}"
+    openwrt_target: "{{ build_target.openwrt_target }}"
+    openwrt_subtarget: "{{ build_target.openwrt_subtarget }}"
   loop: "{{ libremesh_devices }}"
   loop_control:
-    loop_var: libremesh_target_subtarget
+    loop_var: build_target
 
 - name: Flush handlers
   meta: flush_handlers

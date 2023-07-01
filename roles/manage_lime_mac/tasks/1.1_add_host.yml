@@ -2,15 +2,29 @@
 # - name: 1.1.1 Add each device as host in memory
 #   ansible.builtin.add_host:
 #     ansible_host: "{{ item_lime_mac.lime_mac }}"
-#     hostname: "{{ item_lime_mac.hostname | default('') }}"
+#     hostname: "{{ device_hostname }}"
 #     inventory_hostname: "{{ item_lime_mac.lime_mac }}"
 #   ignore_errors: true
+#   register: test
 #   delegate_to: localhost
 
+# - debug:
+#     var: test
+
 - name: 1.1.2 Write each device in hosts file 
-  ansible.builtin.lineinfile:
-    path: "{{ playbook_dir }}/hosts"
-    line: "    {{ item_lime_mac.lime_mac }}:"
+  ansible.builtin.blockinfile:
+    path: "{{ playbook_dir }}/inventory/libremesh_devices.yml"
+    block: "libremesh_devices:\n  hosts:"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK group libremesh_devices"
+    create: yes
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: 1.1.2 Write each device in hosts file 
+  ansible.builtin.blockinfile:
+    path: "{{ playbook_dir }}/inventory/libremesh_devices.yml"
+    block: "    {{ item_lime_mac.lime_mac }}:"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }}"
   ignore_errors: true
   delegate_to: localhost
 

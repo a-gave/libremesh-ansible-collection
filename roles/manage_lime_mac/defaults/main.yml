@@ -7,3 +7,25 @@ wireguard_wg1_devices_list_local_file: "{{ playbook_dir }}/tmp/data/wg1.conf"
 skip_init_vars_lime_mac: false
 skip_generate_lime_mac: true
 skip_update_vpn_wg_server: true
+
+
+default_hostname: "{{ 'LiMe-' ~ mac[:6] }}"
+device_hostname: "{{ item_lime_mac.hostname | default(default_hostname)}}"
+
+default_ap_ssid: 'LibreMesh.org'
+ap_ssid: 'LibreMesh.org'
+
+ipv4_network: '10.13'
+ipv4_host: '123.124'
+ipv4_netmask: '/16'
+ipv4_address: '10.13.123.124'
+ipv4_full_address: '10.13.123.124/16'
+
+# default_mac: cc32e59dafa6
+# lime_mac: lime-cc32e59dafa6
+
+
+mac: "{{ item_lime_mac.lime_mac[-12:] }}"
+
+
+default_ip_network: "{{ lookup('vars', '10.' ~ item_lime_mac.lime_mac[:6]) }}"

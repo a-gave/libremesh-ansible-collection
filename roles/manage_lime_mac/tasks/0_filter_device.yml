@@ -1,6 +1,8 @@
 ---
 - name: 0 - Filter device
   include_tasks: 0.1_filter_lime_mac.yml
+  vars:
+    openwrt_device: "{{ device.name }}"
   loop: "{{ devices }}"
   loop_control:
     loop_var: device

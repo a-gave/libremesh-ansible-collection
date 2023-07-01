@@ -32,7 +32,7 @@
 
       vpn_wg0_listenport: {{ default_vpn_wg0_listenport }}
       
-      vpn_wg0_address: {{ vpn_wg0_network }}.{{ hostvars[item_lime_mac.lime_mac].ip_host }}{{ vpn_wg0_netmask }}
+      vpn_wg0_address: {{ vpn_wg0_network }}.{{ hostvars[item_lime_mac.lime_mac].ipv4_host }}{{ vpn_wg0_netmask }}
 
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} vpn wireguard wg0"
   when: hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey is not defined
