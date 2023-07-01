@@ -1,7 +1,5 @@
 ---
 - name: Append device specific configs to .config
-  become: yes
-  become_user: git
   ansible.builtin.blockinfile: 
     path: "{{ openwrt_imagebuilder_docker_config_dir }}/.config"
     block: |

@@ -17,8 +17,6 @@
     state: directory
 
 - name: Ensure configs dir exist
-  become: yes
-  become_user: root
   file:
     path: "{{ openwrt_imagebuilder_docker_config_dir }}"
     state: "{{ item }}"

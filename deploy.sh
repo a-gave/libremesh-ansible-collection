@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rsync -va ./ /home/arrancar/.ansible/collections/ansible_collections/libremesh/libremesh/
+rsync -va ./ ~/.ansible/collections/ansible_collections/libremesh/libremesh/
