@@ -1,0 +1,45 @@
+---
+- name: Register logfile for use other roles
+  ansible.builtin.set_fact:
+    debug_logfile_json: "{{ debug_logfile_template }}.json"
+
+
+# - name: collect info
+#   ansible.builtin.set_fact:
+#     openwrt_targets_info:
+#       openwrt_target: "build_target_info.openwrt_target}}"
+#   loop: "{{ build_targets }}"
+#   loop_control:
+#     loop_var: build_target_info
+
+- name: echo
+  blockinfile:
+    path: "{{ debug_logfile_json }}"
+    block: "{{ libremesh |to_nice_json }}"
+    create: yes
+    marker: ""
+  delegate_to: localhost
+  vars:
+    # libremesh: "{{ lookup('ansible.builtin.template', 'debug_json.j2') }}"
+    libremesh:
+      libremesh_version: "{{ libremesh_version | default('') }}"
+      openwrt_version: "{{ openwrt_version | default('') }}"
+      libremesh_community: "{{ libremesh_community | default('') }}"
+      libremesh_community_recipe: "{{ libremesh_community_recipe | default('') }}"
+      builder_machine: "{{ inventory_hostname }}"
+      openwrt_build_user: "{{ openwrt_build_user | default('') }}"
+      openwrt_dir: "{{ openwrt_dir | default('') }}"
+      libremesh_version_configs:
+      libremesh_version_packages: "{{ libremesh_version_packages | default('') }}"
+      libremesh_devices_packages: "{{ libremesh_devices_packages | default('') }}"
+      # libremesh_target_subtarget_configs: "{{ libremesh_target_subtarget_configs | default('') }}"
+      libremesh_target_subtarget_packages: "{{ libremesh_target_subtarget_packages | default('') }}"
+      packages_list: "{{  libremesh_version_packages + libremesh_target_subtarget_packages + libremesh_devices_packages | default('') }}"
+      # config_list: "{{  libremesh_version_configs + libremesh_target_subtarget_configs + libremesh_devices_configs | default('') }}"
+      openwrt_targets: 
+        - openwrt_target: "{{ openwrt_target | default('') }}"
+          openwrt_subtarget: "{{ openwrt_subtarget | default('') }}"
+          openwrt_devices: "{{ openwrt_devices_list | default('') }}"
+          packages: "{{ libremesh_target_subtarget_packages | default('') }}"
+          configs: "{{ libremesh_target_subtarget_configs | default('') }}"
+      target: "{{ openwrt_target | default('') }}/{{ openwrt_subtarget | default('') }}"

@@ -24,4 +24,7 @@
     libremesh_community_recipe_target_subtarget_packages_list: "{{ build_target.packages | default('') | join(' ') }}"
 
 - name: 1.6 - Debug
-  include_tasks: 1.5_debug.yml
+  include_tasks: 1.6_debug.yml
+
+- name: 1.7 - Debug
+  include_tasks: 1.7_debug_json.yml

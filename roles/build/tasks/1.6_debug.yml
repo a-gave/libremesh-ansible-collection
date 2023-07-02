@@ -113,7 +113,7 @@
   when: this_role_name == "openwrt_buildroot"
   register: openwrt_buildroot_debug
 
-- name: 1.5.9 - Print debug of to file
+- name: 1.5.9 - Print debug of {{ this_role_name }} to file
   ansible.builtin.shell:
     cmd: echo '{{ lookup('vars', this_role_name ~ '_debug').msg }}' >> {{ debug_logfile }} && sed -i -e 's/, /\n/g' {{ debug_logfile }}
   delegate_to: localhost

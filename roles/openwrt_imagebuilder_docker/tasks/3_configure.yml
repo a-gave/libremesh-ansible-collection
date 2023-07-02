@@ -34,17 +34,6 @@
       -v "{{ openwrt_imagebuilder_docker_files_dir }}:/files/" 
       -v "{{ openwrt_imagebuilder_docker_bin_dir }}:/images/" {% if libremesh_local_packages != [] %} 
       -v "{{ openwrt_sdk_path }}/bin/packages/x86_64/profiles/:/local_packages/profiles/" {% endif %} {{ openwrt_imagebuilder_docker_image }}
-      # --mount type=volume,dst={{ openwrt_imagebuilder_docker_container_workdir }},volume-driver=local,volume-opt=type=none,volume-opt=o=bind,volume-opt=device={{ openwrt_imagebuilder_docker_config_dir }} 
-
-# fix
-# - name: Ensure configs dir exist
-#   become: yes
-#   file:
-#     path: "{{ openwrt_imagebuilder_docker_config_dir }}"
-#     owner: "{{ openwrt_build_user }}"
-#     group: "{{ openwrt_build_user }}"
-#     recurse: yes
-#   when: inventory_hostname != 'localhost'
 
 - name: Add Libremesh Feeds of lime-packages in repositories.conf and add libremesh.org public key
   ansible.builtin.shell: 
