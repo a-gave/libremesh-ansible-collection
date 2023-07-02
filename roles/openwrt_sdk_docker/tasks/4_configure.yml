@@ -1,6 +1,6 @@
 ---
 - name: 4.1 - Generate signin key and output public key to file
-  ansible.builtin.shell: .
+  ansible.builtin.shell:
     cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
       "./staging_dir/host/bin/usign -G -s key-build -p key-build.pub -c \"Local build key\"  
       && ./staging_dir/host/bin/usign -F -p key-build.pub > key-build.pub.id"
