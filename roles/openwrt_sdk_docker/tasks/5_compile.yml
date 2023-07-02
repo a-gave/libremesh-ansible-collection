@@ -1,0 +1,19 @@
+---
+- name: 5.1 - Compile local packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make package/feeds/profiles/{{ libremesh_local_package }}/compile {{ make_nproc }}"
+  loop: "{{ libremesh_local_packages }}"
+  loop_control:
+    loop_var: libremesh_local_package
+
+- name: 5.2 - Generate index of local packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make package/index"
+
+- name: 5.3 - Stop and Remove docker container {{ openwrt_sdk_docker_container }} and it's volumes
+  ansible.builtin.shell:
+    cmd: docker stop {{ openwrt_sdk_docker_container }}; 
+      docker rm -vf {{ openwrt_sdk_docker_container }}
+  ignore_errors: true

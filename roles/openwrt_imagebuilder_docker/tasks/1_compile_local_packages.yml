@@ -1,8 +1,8 @@
 ---
 - name: OpenWrt SDK
   ansible.builtin.include_tasks: 1.1_openwrt_sdk.yml
-  when: openwrt_imagebuilder_use_openwrt_sdk_non_docker
+  when: not openwrt_imagebuilder_use_openwrt_sdk_docker
 
 - name: OpenWrt SDK docker
   ansible.builtin.include_tasks: 1.1_openwrt_sdk_docker.yml
-  when: not openwrt_imagebuilder_use_openwrt_sdk_non_docker
+  when: openwrt_imagebuilder_use_openwrt_sdk_docker

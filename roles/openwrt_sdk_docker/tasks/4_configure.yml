@@ -1,0 +1,49 @@
+---
+- name: 2.1 - Generate signin key and output public key to file
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./staging_dir/host/bin/usign -G -s key-build -p key-build.pub -c \"Local build key\"  
+      && ./staging_dir/host/bin/usign -F -p key-build.pub > key-build.pub.id"
+
+- name: 2.2 - Copy public key id
+  ansible.builtin.shell: 
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:{{ openwrt_sdk_docker_container_workdir }}/key-build.pub.id .
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: 2.3 - Copy public key
+  ansible.builtin.shell: 
+    cmd: docker cp {{ openwrt_sdk_docker_container }}:{{ openwrt_sdk_docker_container_workdir }}/key-build.pub .
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: 2.4 - cp feeds.conf.defaults feed.conf
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "cp feeds.conf.default feeds.conf"
+
+- name: 2.5 - Add Libremesh feeds (sources)
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "echo '{{ libremesh_feeds }}' >> feeds.conf"
+
+- name: 2.6 - Update and install feeds
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./scripts/feeds update -a; ./scripts/feeds install -a"
+
+- name: 2.7 - Adjust permission
+  ansible.builtin.shell: 
+    cmd: docker exec -u root {{ openwrt_sdk_docker_container }} sh -c 
+      "cp -r /local_packages/* {{ openwrt_sdk_docker_local_packages_overwrite_dir }}
+      && chown -R {{ openwrt_sdk_docker_user }}:{{ openwrt_sdk_docker_user }} {{ openwrt_sdk_docker_container_bin_dir }}"
+
+- name: 2.8 - Update and install feeds - install local_packages
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "./scripts/feeds update -a; ./scripts/feeds install -a"
+
+- name: 2.9 - Expand to full config
+  ansible.builtin.shell: 
+    cmd: docker exec {{ openwrt_sdk_docker_container }} sh -c 
+      "make defconfig"

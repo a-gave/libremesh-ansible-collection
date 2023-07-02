@@ -8,7 +8,7 @@
   ansible.builtin.include_tasks: 0_requirements.yml
   when: not skip_install_openwrt_sdk_requirements
 
-- name: Include variables and print debug
+- name: Include all variables files
   ansible.builtin.include_role:
     name: build
   when: not called_by_openwrt_imagebuilder

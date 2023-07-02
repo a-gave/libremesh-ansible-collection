@@ -5,8 +5,14 @@
   register: local_packages_are_compiled 
     
 - name: Compile local packages with OpenWrt SDK docker (increase time of build)
-  ansible.builtin.include_role: 
-    name: openwrt_sdk_docker
+  block:
+  - name: Register called_by_openwrt_imagebuilder
+    ansible.builtin.set_fact:
+      called_by_openwrt_imagebuilder: true
+
+  - name: Include role
+    ansible.builtin.include_role: 
+      name: openwrt_sdk_docker
   when: (local_packages_are_compiled.stat.exists == true and force_openwrt_sdk_rebuild_local_packages )
     or (local_packages_are_compiled.stat.exists == false)
 

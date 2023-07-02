@@ -31,7 +31,7 @@
 #     - "libremesh_community_recipe_device_packages = {{ libremesh_community_recipe_device_packages | default('') }}"
       - "--------------"
       - "# LOCAL PACKAGES"
-      - "# Compiled with openwrt-sdk, or directly with buildroot"
+      - "# Compiled with OpenWrt SDK or directly with BuildRoot"
       - "local_packages = {{ libremesh_local_packages | default('') | join(' ') }}"
       - "--------------"
       - "# BUILDER:"

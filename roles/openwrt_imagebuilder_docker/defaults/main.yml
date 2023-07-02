@@ -28,7 +28,7 @@ openwrt_imagebuilder_docker_container_workdir: /builder
 # OpenWrt SDK
 libremesh_local_packages: []
 openwrt_sdk_local_packages_dir: "{{ openwrt_sdk_path }}/bin/packages/$(ls {{ openwrt_sdk_path }}/bin/packages/)/profiles"
-openwrt_imagebuilder_use_openwrt_sdk_non_docker: false
+openwrt_imagebuilder_use_openwrt_sdk_docker: true
 
 openwrt_sdk_dirname: libremesh_{{ version_number }}/openwrt_sdk
 openwrt_sdk_download_dir: "{{ openwrt_dir }}/{{ openwrt_sdk_dirname }}"

@@ -1,0 +1,12 @@
+---
+- name: 2 - Prepare   
+  ansible.builtin.include_tasks: 2_prepare.yml
+
+- name: 3 - Start docker 
+  ansible.builtin.include_tasks: 3_start_docker.yml
+
+- name: 4 - Configure   
+  ansible.builtin.include_tasks: 4_configure.yml
+
+- name: 5 - Compile   
+  ansible.builtin.include_tasks: 5_compile.yml

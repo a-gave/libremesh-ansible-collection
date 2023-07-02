@@ -26,7 +26,7 @@ libremesh_feeds: |
   src-git profiles https://github.com/libremesh/network-profiles.git
 
 # Skip options
-skip_openwrt_sdk_install_requirements: false
+skip_install_openwrt_sdk_docker_requirements: false
 
 openwrt_sdk_docker_container_user: "buildbot"
 openwrt_sdk_docker_container_workdir: /builder

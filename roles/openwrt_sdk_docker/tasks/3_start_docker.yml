@@ -1,0 +1,24 @@
+---
+- name: 3.1 - Print debug
+  ansible.builtin.include_role:
+    name: build
+    tasks_from: 1_print_debug.yml
+
+- name: 3.2 - [Warn] Stop and remove all existing openwrt-sdk-docker containers and their's volumes
+  ansible.builtin.shell:
+    cmd: docker ps -a | grep "openwrt\/sdk" &> /dev/null &&
+      docker stop $(docker ps -a | grep "openwrt\/sdk" | awk '{print $1}') &&
+      docker rm -vf $(docker ps -a | grep "openwrt\/sdk" | awk '{print $1}') 
+  ignore_errors: true
+  args:
+    chdir: "{{ openwrt_sdk_docker_workdir }}"
+
+- name: 3.3 - Pull docker image
+  ansible.builtin.shell: 
+    cmd: docker pull {{ openwrt_sdk_docker_image }}
+
+- name: 3.4 - Start docker container {{ openwrt_sdk_docker_container }}
+  ansible.builtin.shell: 
+    cmd: docker run --name {{openwrt_sdk_docker_container}} -it -d 
+      -v "{{ openwrt_sdk_docker_bin_dir }}:{{ openwrt_sdk_docker_container_bin_dir }}"
+      -v "{{ openwrt_sdk_docker_local_packages_sources_mountdir }}:{{ openwrt_sdk_docker_local_packages_sources_dir }}" {{ openwrt_sdk_docker_image }}
