@@ -39,12 +39,13 @@
       - "openwrt_dir = {{ openwrt_dir | default('') }}"
       - "openwrt_build_user = {{ openwrt_build_user | default('') }}"
       - "--------------"
-      - "# BUILD VARIABLES loaded from files:"
+      - "# BUILD VARIABLES loaded in this order from files:"
       - "1 - {{ libremesh_version_vars | default('') }}"
-      - "2 - {{ libremesh_target_vars | default('') }}"
-      - "3 - {{ libremesh_community_vars | default('') }}"
-      - "4 - {{ libremesh_community_recipe_vars | default('') }}"
-      - "5 - {{ hostvars_file | default('') }}"
+      - "2 - {{ libremesh_community_vars | default('') }}"
+      - "3 - {{ libremesh_community_recipe_vars | default('') }}"
+      - "4 - {{ hostvars_file | default('') }}"
+      - "5 - {{ libremesh_target_vars | default('') }}"
+
     
   register: build_debug
 

@@ -1,33 +1,28 @@
 ---
-- name: 0.1 - Include Libremesh Version variables
+- name: 0.1 - Include Libremesh version variables file
   ansible.builtin.include_vars:
     file: "{{libremesh_version_vars}}"
   when: libremesh_version is defined
   ignore_errors: true
 
-- name: 0.2 - Include Libremesh Target variables if any
-  ansible.builtin.include_vars:
-    file: "{{libremesh_target_vars}}"
-  when: libremesh_version is defined and openwrt_targets is defined
-  ignore_errors: true
-  
-- name: 0.3 - Include Community variables main
+- name: 0.2 - Include Community main variables file
   ansible.builtin.include_vars:
     file: "{{libremesh_community_vars}}"
   when: libremesh_community is defined
   ignore_errors: true
 
-- name: 0.4 - Include Community variables file
+- name: 0.3 - Include Community recipe variables file
   ansible.builtin.include_vars:
     file: "{{libremesh_community_recipe_vars}}"
   when: libremesh_community is defined and libremesh_community_recipe is defined
   ignore_errors: true
 
-- block:
-    - name: Set fact
+- name: 0.4 - Include buildhost {{ inventory_hostname }} variables file
+  block:
+    - name: Register fact hostvars_file
       ansible.builtin.set_fact: 
         hostvars_file: "{{ playbook_dir }}/host_vars/{{ inventory_hostname }}.yml"
-    - name: Include Hostvars
+    - name: Include hostvars_file
       ansible.builtin.include_vars:
         file: "{{ hostvars_file }}"
   ignore_errors: true

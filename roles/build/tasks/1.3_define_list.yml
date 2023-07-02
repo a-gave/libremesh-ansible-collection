@@ -9,12 +9,6 @@
     openwrt_devices: "{{ build_target.openwrt_devices | default('all') }}"
   when: not build_libremesh_supported_devices 
 
-- debug: 
-    var: libremesh_supported_devices
-
-- debug: 
-    var: libremesh_devices
-
 - name: Printable list
   ansible.builtin.include_tasks: 1.4_printable_list.yml
   when: (openwrt_devices is defined) 

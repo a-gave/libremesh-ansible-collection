@@ -4,9 +4,6 @@
     path: "{{ openwrt_sdk_docker_workdir }}/bin/packages/x86_64/profiles/Packages.gz"
   register: local_packages_are_compiled 
     
-- debug:
-    var: local_packages_are_compiled
-
 - name: Compile local packages with OpenWrt SDK docker (increase time of build)
   ansible.builtin.include_role: 
     name: openwrt_sdk_docker
