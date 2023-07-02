@@ -2,7 +2,7 @@
 - name: 4.1 - Configure single device
   ansible.builtin.include_tasks: 4.1_configure_single_device.yml  
 
-- name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}_{{ openwrt_subtarget }}_{{ openwrt_device.name }}
+- name: 4.2 - Build LibreMesh {{ libremesh_version }} {{ openwrt_target }}-{{ openwrt_subtarget }}-{{ openwrt_device.name }}
   ansible.builtin.shell: 
     cmd: docker exec {{ openwrt_imagebuilder_docker_container }} sh -c 
       "make image PROFILE='{{ openwrt_device.name }}'

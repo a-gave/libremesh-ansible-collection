@@ -1,13 +1,21 @@
 ---
 - name: Append device specific configs to .config
-  ansible.builtin.blockinfile: 
-    path: "{{ openwrt_imagebuilder_docker_config_dir }}/.config"
-    block: |
-      {% for device_config in openwrt_device.configs %} {% if device_config.startswith('-') %} 
-      # CONFIG_{{ device_config[1:] }} is not set {% else %} 
-      CONFIG_{{ device_config }}=y {% endif %}
-      {% endfor %}
-    marker: "# {mark} ANSIBLE MANAGED BLOCK device configs"
+  block:
+    - name: copy file
+      shell: "docker cp {{ openwrt_imagebuilder_docker_container }}:{{ openwrt_imagebuilder_docker_container_workdir }}/.config {{ openwrt_imagebuilder_docker_config_dir }}"
+
+    - name: append config
+      ansible.builtin.blockinfile: 
+        path: "{{ openwrt_imagebuilder_docker_config_dir }}/.config"
+        block: |
+          {% for device_config in openwrt_device.configs %} {% if device_config.startswith('-') %} 
+          # CONFIG_{{ device_config[1:] }} is not set {% else %} 
+          CONFIG_{{ device_config }}=y {% endif %}
+          {% endfor %}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK device configs"
+
+    - name: copy back
+      shell: "docker cp {{ openwrt_imagebuilder_docker_config_dir }}/.config {{ openwrt_imagebuilder_docker_container }}:{{ openwrt_imagebuilder_docker_container_workdir }}/.config"
 
 - name: Define list of device specific configs
   ansible.builtin.set_fact: 

@@ -1,7 +1,7 @@
 ---
-# hotfix
-- name: Append device specific configs to .config
+- name: Clean device specific configs if any
   ansible.builtin.blockinfile: 
     path: "{{ openwrt_imagebuilder_docker_config_dir }}/.config"
-    state: absent
+    block: ""
     marker: "# {mark} ANSIBLE MANAGED BLOCK device configs"
+  ignore_errors: true

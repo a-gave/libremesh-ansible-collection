@@ -12,6 +12,7 @@
     recurse: yes
     owner: "{{ openwrt_build_user }}"
     group: "{{ openwrt_build_user }}"
+  when: inventory_hostname != 'localhost'
   
 - name: 3.2 - Generate signin key
   ansible.builtin.shell: ./staging_dir/host/bin/usign -G -s ./key-build -p ./key-build.pub -c "Local build key"
