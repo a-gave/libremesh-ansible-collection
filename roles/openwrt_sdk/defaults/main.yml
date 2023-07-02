@@ -20,3 +20,5 @@ libremesh_feeds: |
 
 # Skip options
 skip_install_openwrt_sdk_requirements: false
+
+called_by_openwrt_imagebuilder: false

@@ -13,10 +13,16 @@
   register: local_packages_are_compiled
   when: openwrt_sdk_path.matched != 0
 
-
 - name: Compile local packages with OpenWrt SDK (increase time of build)
-  ansible.builtin.include_role: 
-    name: openwrt_sdk
+  block:
+    - name: Register called_by_openwrt_imagebuilder
+      ansible.builtin.set_fact:
+        called_by_openwrt_imagebuilder: true
+
+    - name: Include role
+      ansible.builtin.include_role: 
+        name: openwrt_sdk
+        
   when: (local_packages_are_compiled is defined and force_openwrt_sdk_rebuild_local_packages )
     or (openwrt_sdk_path.matched == 0)
 

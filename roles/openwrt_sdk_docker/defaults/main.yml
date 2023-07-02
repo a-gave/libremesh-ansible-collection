@@ -31,3 +31,6 @@ skip_openwrt_sdk_install_requirements: false
 openwrt_sdk_docker_container_user: "buildbot"
 openwrt_sdk_docker_container_workdir: /builder
 openwrt_sdk_docker_container_bin_dir: "{{ openwrt_sdk_docker_container_workdir }}/bin/"
+
+
+called_by_openwrt_imagebuilder: false

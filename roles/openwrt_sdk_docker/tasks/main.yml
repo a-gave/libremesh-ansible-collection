@@ -11,6 +11,7 @@
 - name: Include variables and print debug
   ansible.builtin.include_role:
     name: build
+  when: not called_by_openwrt_imagebuilder
 
 - name: Register fact build_targets
   ansible.builtin.set_fact:
