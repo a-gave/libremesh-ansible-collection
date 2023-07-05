@@ -1,0 +1,8 @@
+---
+- name: Define list of device specific packages
+  ansible.builtin.include_tasks: 4.1.0.1_load_device_packages.yml
+  when: libremesh_supported_device.packages is defined
+
+- name: Define list of device specific configs
+  ansible.builtin.include_tasks: 4.1.0.2_load_device_configs.yml
+  when: libremesh_supported_device.configs is defined

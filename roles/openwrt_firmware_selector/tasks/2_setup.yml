@@ -1,16 +1,12 @@
 ---
-- name: build - Include variables and print debug
+- name: 0 - build - Include variables and print debug
   ansible.builtin.include_role:
     name: build
 
 - name: 1 - Ensure openwrt_firmware_selector_dir exists
-  become: yes
-  become_user: root
   ansible.builtin.file:
     path: "{{ openwrt_firmware_selector_template_dir }}"
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
 
 - name: 3 - Create template folder
   blockinfile:

@@ -1,0 +1,14 @@
+---
+- name: register packages for libremesh support
+  block:
+    - name: register packages list
+      ansible.builtin.set_fact:
+        libremesh_supported_device_packages_list: "{{ libremesh_supported_device_packages_list | default([]) | union([device_package]) }}"
+      loop: "{{ libremesh_supported_device.packages }}"
+      loop_control:
+        loop_var: device_package
+
+    - name: register packages list string
+      ansible.builtin.set_fact: 
+        libremesh_supported_device_packages_list_string: "{{ libremesh_supported_device.packages | join(' ') | default([])  }}"
+  when: libremesh_supported_device.name == openwrt_device.name

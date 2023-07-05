@@ -12,7 +12,7 @@
 #   loop_control:
 #     loop_var: build_target_info
 
-- name: echo
+- name: Debug json
   blockinfile:
     path: "{{ debug_logfile_json }}"
     block: "{{ libremesh |to_nice_json }}"

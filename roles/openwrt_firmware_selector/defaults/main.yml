@@ -4,19 +4,38 @@ openwrt_firmware_selector_repository: https://gitlab.com/openwrt/web/firmware-se
 
 openwrt_firmware_selector_version: 'v3.8.5'
 
-openwrt_firmware_selector_dir: '/opt/openwrt_firmware_selector'
+openwrt_firmware_selector_dir: '{{ playbook_dir }}/openwrt_build/openwrt_firmware_selector'
 
 openwrt_firmware_selector_template_dirname: '{{ libremesh_community }}_{{ libremesh_community_recipe }}'
 
 openwrt_firmware_selector_template_dir: '{{ openwrt_firmware_selector_dir }}/{{ openwrt_firmware_selector_template_dirname }}'
 
+openwrt_firmware_selector_download_dir: '{{ openwrt_firmware_selector_template_dir }}/firmware-selector-openwrt-org'
+
+# location of config file
+openwrt_firmware_selector_config_file: "{{ openwrt_firmware_selector_download_dir }}/www/config.js"
+
 # define docker container name used in docker-compose.yml
 openwrt_firmware_selector_container_name: "{{ libremesh_community }}_{{libremesh_community_recipe}}_firmware_images"
 
+openwrt_firmware_selector_address: http://0.0.0.0:{{ openwrt_firmware_selector_port }}
 
+openwrt_firmware_selector_host: http://0.0.0.0:{{ openwrt_firmware_selector_port }}
 
+openwrt_firmware_selector_port: '9010'
 
+openwrt_firmware_selector_url: "{{ openwrt_firmware_selector_host }}:{{ openwrt_firmware_selector_port }}"
 
+openwrt_firmware_selector_image_url_path: "releases/{version}/targets/{target}"
 
+# image_url passed to firmware-selector-openwrt-org
+openwrt_firmware_selector_image_url: "{{ openwrt_firmware_selector_address }}/{{ openwrt_firmware_selector_image_url_path }}"
 
-libremesh_community_firmwares_webserver_port: '8085'
+openwrt_firmware_selector_info_url: "{{ openwrt_firmware_selector_address }}/releases/"
+
+openwrt_firmware_selector_versions: "{{ {{ version_dist }}:data/{{ version_dist }} | to_json }}"
+
+openwrt_firmware_selector_default_version: 'master'
+
+# skip options
+skip_install_openwrt_firmware_selector_requirements: false

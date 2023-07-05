@@ -37,7 +37,7 @@ openwrt_sdk_docker_dirname: "libremesh_{{ version_number }}/openwrt_sdk_docker_{
 openwrt_sdk_docker_workdir: "{{ openwrt_dir }}/{{ openwrt_sdk_docker_dirname }}"
 
 
-
+build_libremesh_supported_devices: false
 
 # Force Options
 force_openwrt_sdk_rebuild_local_packages: false

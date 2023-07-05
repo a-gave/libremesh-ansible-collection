@@ -1,0 +1,37 @@
+---
+- debug:
+    var: openwrt_firmware_selector_image_url  
+
+- debug:
+    var: openwrt_firmware_selector_info_url  
+
+
+- name: populate profiles
+  ansible.builtin.shell: 
+    cmd: ./misc/collect.py --image-url "{{ openwrt_firmware_selector_image_url }}" {{ openwrt_firmware_selector_info_url }} www/
+  args:
+    chdir: "{{ openwrt_firmware_selector_download_dir }}"
+
+- name: register versions
+  ansible.builtin.set_fact:
+    version: "\"{{ version_number }}\": \"data/{{ version_number }}\""
+
+- name: create file versions.yml
+  ansible.builtin.lineinfile:
+    line: "openwrt_firmware_selector_versions:"
+    path: "{{ openwrt_firmware_selector_download_dir }}/ansible/versions.yml"
+    create: true
+
+- name: write single version to a yml file
+  ansible.builtin.lineinfile:
+    line: "  {{ version }}"
+    path: "{{ openwrt_firmware_selector_download_dir }}/ansible/versions.yml"
+
+- name: import versions from yml
+  ansible.builtin.include_vars:
+    file: "{{ openwrt_firmware_selector_download_dir }}/ansible/versions.yml"
+
+- name: Adjust /www/config.js
+  ansible.builtin.template:
+    src: config.js.j2
+    dest: "{{ openwrt_firmware_selector_download_dir }}/www/config.js"

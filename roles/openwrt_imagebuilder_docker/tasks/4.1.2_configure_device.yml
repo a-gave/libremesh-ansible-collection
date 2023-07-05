@@ -8,6 +8,10 @@
       ansible.builtin.blockinfile: 
         path: "{{ openwrt_imagebuilder_docker_config_dir }}/.config"
         block: |
+          {% for device_config in libremesh_supported_device_configs_list %} {% if device_config.startswith('-') %} 
+          # CONFIG_{{ device_config[1:] }} is not set {% else %} 
+          CONFIG_{{ device_config }}=y {% endif %}
+          {% endfor %}
           {% for device_config in openwrt_device.configs %} {% if device_config.startswith('-') %} 
           # CONFIG_{{ device_config[1:] }} is not set {% else %} 
           CONFIG_{{ device_config }}=y {% endif %}

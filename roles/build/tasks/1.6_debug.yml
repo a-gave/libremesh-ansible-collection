@@ -1,5 +1,5 @@
 ---
-- name: Register logfile for use other roles
+- name: Register logfile for use by other roles
   ansible.builtin.set_fact:
     debug_logfile: "{{ debug_logfile_template }}"
 

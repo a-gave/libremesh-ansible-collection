@@ -1,9 +1,13 @@
 ---
 - name: requirements
   ansible.builtin.include_tasks: 0_requirements.yml
+  when: not skip_install_openwrt_firmware_selector_requirements
 
-- name: template
-  ansible.builtin.include_tasks: 1_template.yml
+- name: install
+  ansible.builtin.include_tasks: 1_install.yml
 
-- name: update
-  ansible.builtin.include_tasks: 2_update.yml
+- name: setup
+  ansible.builtin.include_tasks: 2_setup.yml
+
+- name: configure
+  ansible.builtin.include_tasks: 3_configure.yml

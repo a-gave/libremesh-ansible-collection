@@ -1,0 +1,14 @@
+---
+- name: register configs for libremesh support
+  block:
+    - name: register configs list
+      ansible.builtin.set_fact:
+        libremesh_supported_device_configs_list: "{{ libremesh_supported_device_config_list | default([]) | union([device_config]) }}"
+      loop: "{{ libremesh_supported_device.configs }}"
+      loop_control:
+        loop_var: device_config
+
+    - name: register config list string
+      ansible.builtin.set_fact: 
+        libremesh_supported_device_configs_list_string: "{{ libremesh_supported_device.configs | join(' ') | default([])  }}"
+  when: libremesh_supported_device.name == openwrt_device.name

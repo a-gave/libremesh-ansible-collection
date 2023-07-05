@@ -1,4 +1,14 @@
 ---
+- name: Install openwrt_asu requirements
+  become: yes
+  become_user: root
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - npm
 
-# install yarn
-#- name:
+- name: Install pacakges via npm
+  become: yes
+  become_user: root
+  ansible.builtin.shell: npm install -g yarn

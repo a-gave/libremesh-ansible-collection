@@ -3,7 +3,9 @@ services:
   caddy:
     image: caddy:latest
     container_name: "{{ libremesh_community }}_{{libremesh_community_recipe}}_firmwares"
+    restart: unless-stopped
     ports:
-      - "{{ libremesh_community_firmwares_webserver_port }}:80"
+      - "{{ openwrt_firmware_selector_port }}:80"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./firmware-selector-openwrt-org/www:/srv/selector
