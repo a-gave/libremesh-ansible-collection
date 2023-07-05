@@ -20,3 +20,11 @@ config generic_uci_config wireguard
   list uci_set "wireguard.wg0.private_key={{ hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey }}"
 	list uci_set "wireguard.wg0.listen_port={{ hostvars[item_lime_mac.lime_mac].vpn_wg0_listenport }}"
 {% endif %}
+
+
+{% if hostvars[item_lime_mac.lime_mac].device_configs is defined %}
+{% for config in hostvars[item_lime_mac.lime_mac].device_configs %}
+config {{ config.type }} {{ config.name }}
+	{{ config.block }}
+{% endfor %}
+{% endif %}

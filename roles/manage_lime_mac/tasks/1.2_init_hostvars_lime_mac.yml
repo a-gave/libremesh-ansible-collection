@@ -1,13 +1,13 @@
 ---
-- name: 1.2.1 - {{ item_lime_mac.lime_mac }} - Define ip_host
+- name: 1.2.1 - {{ item_lime_mac.lime_mac }} - Define ipv4_host
   shell:
     cmd: echo "$({{ role_path }}/files/mac56-to-ip_host.sh {{ item_lime_mac.lime_mac }} --ip-c-start-from 128)"
-  register: ip_host
+  register: ipv4_host
 
-- name: 1.2.2 - {{ item_lime_mac.lime_mac }} - Save ip_host
+- name: 1.2.2 - {{ item_lime_mac.lime_mac }} - Save ipv4_host
   blockinfile:
     path: "{{ playbook_dir }}/host_vars/{{ item_lime_mac.lime_mac }}.yml"
-    block: "ip_host: '{{ ip_host.stdout }}'"
+    block: "ipv4_host: '{{ ipv4_host.stdout }}'"
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} utils"
     create: yes
 
@@ -15,10 +15,25 @@
   blockinfile:
     path: "{{ playbook_dir }}/host_vars/{{ item_lime_mac.lime_mac }}.yml"
     block: |
-      hostname: {{ item_lime_mac.hostname }}
+      hostname: {{ device_hostname }}
       lime_mac: {{ item_lime_mac.lime_mac }}
-      main_ipv4_address: {{ ip_network }}.{{ ip_host.stdout }}{{ ip_netmask }}
+      ipv4_address: '{{ ipv4_network }}.{{ ipv4_host.stdout }}'
+      main_ipv4_address: {{ ipv4_network }}.{{ ipv4_host.stdout }}{{ ipv4_netmask }}
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} common"
+    create: yes
+
+- name: 1.2.3 - {{ item_lime_mac.lime_mac }} - Init host_vars device
+  blockinfile:
+    path: "{{ playbook_dir }}/host_vars/{{ item_lime_mac.lime_mac }}.yml"
+    block: |
+      libremesh_version: {{ libremesh_version }}
+      libremesh_community: {{ libremesh_community }}
+      openwrt_version: {{ openwrt_version }}
+      target: {{ openwrt_target }}
+      subtarget: {{ openwrt_subtarget }}
+      device: {{ openwrt_device }}
+      openwrt_device_page: https://openwrt.org/start?do=search&id=toh&q={{openwrt_device}}@toh
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} device"
     create: yes
 
 - name: 1.2.4 - {{ item_lime_mac.lime_mac }} - Init host_vars config
@@ -26,7 +41,7 @@
     path: "{{ playbook_dir }}/host_vars/{{ item_lime_mac.lime_mac }}.yml"
     block: |
       config_lime_system: |
-        option hostname '{{ item_lime_mac.hostname }}'
+        option hostname '{{ device_hostname }}'
       config_lime_wifi: |
         # option channel_5ghz '{% if hostvars[item_lime_mac.lime_mac].channel_5ghz is defined %}{{ hostvars[item_lime_mac.lime_mac].channel_5ghz }}{% else %}{{ default_channel_5ghz }}{% endif %}'
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} config"

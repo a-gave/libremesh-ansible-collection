@@ -25,14 +25,10 @@
     path: "{{ playbook_dir }}/host_vars/{{ item_lime_mac.lime_mac }}.yml"
     block: |
       vpn_wg0_privatekey: {% if hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey is defined %}{{ hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey}}{%else%}{{wg_privatekey.stdout}}{%endif%}
-
       vpn_wg0_publickey: {% if hostvars[item_lime_mac.lime_mac].vpn_wg0_publickey is defined %}{{ hostvars[item_lime_mac.lime_mac].vpn_wg0_publickey}}{%else%}{{wg_publickey.stdout}}{%endif%}
-
       vpn_wg0_presharedkey: {% if hostvars[item_lime_mac.lime_mac].vpn_wg0_presharedkey is defined %}{{hostvars[item_lime_mac.lime_mac].vpn_wg0_presharedkey}}{%else%}{{wg_presharedkey.stdout}}{%endif%}
-
       vpn_wg0_listenport: {{ default_vpn_wg0_listenport }}
+      vpn_wg0_address: {{ vpn_wg0_network }}.{{ hostvars[item_lime_mac.lime_mac].ipv4_host }}{{ vpn_wg0_netmask }}
       
-      vpn_wg0_address: {{ vpn_wg0_network }}.{{ hostvars[item_lime_mac.lime_mac].ip_host }}{{ vpn_wg0_netmask }}
-
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item_lime_mac.lime_mac }} vpn wireguard wg0"
   when: hostvars[item_lime_mac.lime_mac].vpn_wg0_privatekey is not defined

@@ -6,12 +6,14 @@
 
 - name: 1.2 - Initialize default variables in host_vars/{{item_lime_mac.lime_mac}}
   include_tasks: 1.2_init_hostvars_lime_mac.yml
-  when: hostvars[item_lime_mac.lime_mac].ip_host is not defined
+  when: hostvars[item_lime_mac.lime_mac].ipv4_host is not defined or 
+    (hostvars[item_lime_mac.lime_mac].ipv4_host is defined and force_regenerate_hostvars)
 
 - meta: refresh_inventory
 
 - name: 1.3 - Initialize vpn wg0 variables in host_vars/{{item_lime_mac.lime_mac}}
   include_tasks: 1.3_init_hostvars_vpn_wg.yml
   when: hostvars[item_lime_mac.lime_mac].vpn_wg0_publickey is not defined
+    and vpn_wg0_network is defined
 
-
+- meta: refresh_inventory

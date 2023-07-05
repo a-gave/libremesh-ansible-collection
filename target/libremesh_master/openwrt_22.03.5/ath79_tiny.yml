@@ -12,6 +12,7 @@ libremesh_supported_devices:
     # - valsamoggia.ninux.org
 
 # NOTE: unsupported devices: (works on openwrt 19.07.10)
+# https://openwrt.org/toh/ubiquiti/nanostationm5?rev=1683487227#installation
 #  - name ubnt_nanostation-m
 
 # Define here a list of supported devices configs
